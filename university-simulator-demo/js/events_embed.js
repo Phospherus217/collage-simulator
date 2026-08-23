@@ -1,0 +1,1431 @@
+/**
+ * 大学四年模拟器 v2.0 - 全系统完整事件数据库 (events_embed.js)
+ */
+
+window.EMBEDDED_EVENTS = [
+  {
+    "event_id": "PU_001",
+    "title": "大学报到：初见宿舍与室友破冰",
+    "package": "PU",
+    "type": "NORMAL",
+    "priority": "P0",
+    "min_month": 1,
+    "max_month": 1,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_is": 1
+    },
+    "content": {
+      "background": "大一上 9 月，你拖着行李箱踏入大学校门，来到未来四年的宿舍。",
+      "scene": "室友们来自天南海北，正热络地互相介绍，提议今晚一起去校门口吃聚餐破冰。",
+      "conflict": "是积极参与聚餐融入宿舍圈子，还是独自收拾床铺整理大学规划？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "热情参与聚餐！和室友畅聊大学憧憬",
+        "result_text": "一顿热气腾腾的火锅拉近了彼此的距离，寝室氛围融洽，社交与人脉初启！",
+        "cost": {
+          "TU": 2,
+          "EP": 15
+        },
+        "variable_delta": {
+          "social": 8,
+          "romance": 5
+        },
+        "tag_add": [
+          "FLAG_PU_DORM_BOND"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "留在宿舍安静收拾行李，制定四年自律计划",
+        "result_text": "你把书桌整理得井井有条，并列好了大一第一学期的学习自律清单。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "focus": 8,
+          "academic": 3
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "AC_000",
+    "title": "新生第一课：全校通识课与选课博弈",
+    "package": "AC",
+    "type": "NORMAL",
+    "priority": "P1",
+    "min_month": 1,
+    "max_month": 2,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_in": [
+        1,
+        2
+      ]
+    },
+    "content": {
+      "background": "教务系统开放新生选课，通识课名额秒空。",
+      "scene": "面临选择：是抢高难度但能学到真东西的硬核理论课，还是选给分友好的通识课？",
+      "conflict": "是在大一打好硬核技术理论基础，还是追求高绩点保险？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "选修硬核计算机前沿理论课（高收益高投入）",
+        "result_text": "课程挑战巨大但收获颇丰，你在大一就掌握了扎实的基础编程思维与架构视野！",
+        "cost": {
+          "TU": 2,
+          "EP": 20
+        },
+        "variable_delta": {
+          "skill": 8,
+          "academic": 6,
+          "focus": 4
+        },
+        "tag_add": [
+          "FLAG_AC_HARDCORE_COURSE"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "选修给分友好的通识课，留出充足课外时间",
+        "result_text": "轻松拿到优秀成绩，同时拥有充裕的课余时间自由支配。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "academic": 5,
+          "health": 3
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "SO_001",
+    "title": "百团大战：校级科技创新社团选拔",
+    "package": "SO",
+    "type": "OPPORTUNITY",
+    "priority": "P2",
+    "min_month": 1,
+    "max_month": 3,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "social": 30
+      }
+    },
+    "content": {
+      "background": "学校核心科技创新协会招新，学长学姐在现场答辩考核动手能力与沟通协调。",
+      "scene": "面试分为无领导小组讨论与现场手撕 Demo，需要投入周末时间深度参与。",
+      "conflict": "是主动竞聘骨干拓展人脉，还是专注个人自习？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "积极竞聘！展现技术实力与团队组织意愿",
+        "result_text": "你的表现受到社团会长的高度评价，成功入选项目部骨干，结识了多位优秀的学长学姐！",
+        "cost": {
+          "TU": 2,
+          "EP": 20
+        },
+        "variable_delta": {
+          "social": 12,
+          "reputation": 10,
+          "skill": 5,
+          "delivery": 5
+        },
+        "tag_add": [
+          "FLAG_SO_CLUB_CORE"
+        ],
+        "resume_entry": {
+          "category": "CAMPUS_ACT",
+          "chain_id": "EXP_SO_CLUB_01",
+          "stage_contribution": "PARTICIPANT",
+          "title": "校级科技创新协会核心项目部成员",
+          "description": "参与组织全校技术沙龙与黑客马拉松，协调跨院系团队合作，拓展一手行业信息源。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "仅作为普通会员旁听活动，保持精力",
+        "result_text": "你作为普通成员参与了日常讲座，省下了大量课余时间，保持了平稳的自习节奏。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "social": 4,
+          "focus": 3
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "SO_002",
+    "title": "学院学生会干事竞聘与例会拉扯",
+    "package": "SO",
+    "type": "NORMAL",
+    "priority": "P2",
+    "min_month": 2,
+    "max_month": 4,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "social": 25
+      }
+    },
+    "content": {
+      "background": "院学生会外联部与办公室招募干事，负责校级大型晚会赞助与行政例会统筹。",
+      "scene": "干事每周需参加 2 次晚间例会与物资搬运，但能结识辅导员与各年级干部。",
+      "conflict": "是加入学生会积累体制内综合组织经验，还是专注于个人代码沉淀？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "竞聘学生会干事！负责跨院系晚会外联沟通",
+        "result_text": "你顺利入选外联部干事，熟悉了学院行政审批流程，社交能力与师长人脉得到提升！",
+        "cost": {
+          "TU": 2,
+          "EP": 20
+        },
+        "variable_delta": {
+          "social": 10,
+          "reputation": 6,
+          "focus": -4
+        },
+        "tag_add": [
+          "FLAG_SO_STUDENT_UNION_MEMBER"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "婉拒竞聘，专心自习打牢编程基础",
+        "result_text": "你避免了繁琐的例会与行政表格，留出了完整的自习大块时间。",
+        "cost": {
+          "TU": 0,
+          "EP": 0
+        },
+        "variable_delta": {
+          "focus": 6,
+          "skill": 4
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "AI_000",
+    "title": "大一浅层线索：选修课上的 AI Agent 演示",
+    "package": "AI",
+    "type": "HIDDEN",
+    "priority": "P3",
+    "min_month": 2,
+    "max_month": 5,
+    "repeatable": false,
+    "unlock_condition": {
+      "ailab_phase": "HIDDEN"
+    },
+    "content": {
+      "background": "在一堂公共选修课上，一位高年级学长作为助教展示了一个自动化网页检索智能体 Demo。",
+      "scene": "台下同学大多在玩手机，但那套流畅的多工具调用与提示词工程让你眼前一亮。",
+      "conflict": "是下课后主动找助教学长请教交流，还是随手拍个照片留在相册？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "下课后主动留步，向学长请教智能体底层实现",
+        "result_text": "学长赞许你的敏锐度，给你推荐了几个开源仓库。你隐蔽获得了 AI-Lab 第一道线索！",
+        "cost": {
+          "TU": 1,
+          "EP": 10
+        },
+        "variable_delta": {
+          "ai_depth": 6,
+          "skill": 4,
+          "social": 4
+        },
+        "tag_add": [
+          "FLAG_AI_HINT_AGENT_DEMO"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "觉得挺酷，拍了张 PPT 之后回宿舍打游戏",
+        "result_text": "你拍下了课件，但之后没有花时间研究，技术依然停留在表面认知。",
+        "cost": {
+          "TU": 0,
+          "EP": 5
+        },
+        "variable_delta": {
+          "social": 2
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "AC_001",
+    "title": "大一上高数期中失利与刷题救赎",
+    "package": "AC",
+    "type": "NORMAL",
+    "priority": "P1",
+    "min_month": 3,
+    "max_month": 4,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_in": [
+        3,
+        4
+      ]
+    },
+    "content": {
+      "background": "高等数学期中考卷发下，全班平均分仅 62 分，你发现大学数学与高中截然不同。",
+      "scene": "距离期末还有一个月，如果期末不能考到 85 以上，大一总绩点将直接滑坡。",
+      "conflict": "是推掉周末娱乐死磕吉米多维奇题集，还是随缘及格就好？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "死磕刷题！泡图书馆整理每一道证明题错题集",
+        "result_text": "一个月的苦战换来了扎实的微积分底子，期末高数取得 92 分高分，稳住了大一绩点！",
+        "cost": {
+          "TU": 2,
+          "EP": 25
+        },
+        "variable_delta": {
+          "academic": 10,
+          "focus": 6,
+          "health": -5
+        },
+        "tag_add": [
+          "FLAG_AC_MATH_RESCUE"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "及格万岁，把精力留给社团和游戏",
+        "result_text": "期末勉强及格通过，绩点处于专业中下游，错失了大一奖学金评选。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "academic": 2,
+          "health": 3
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "PU_002",
+    "title": "寒假返乡：家庭聚餐与同龄人职业比较",
+    "package": "PU",
+    "type": "NORMAL",
+    "priority": "P2",
+    "min_month": 5,
+    "max_month": 5,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_is": 5
+    },
+    "content": {
+      "background": "大一寒假回家过年，亲戚长辈在年夜饭桌上询问起大学专业与未来出路。",
+      "scene": "长辈们热议体制内编制与考研，与你对互联网和前沿科技的认知产生碰撞。",
+      "conflict": "是耐心向父母分享现代科技行业发展规划，还是敷衍应付？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "真诚沟通！向家人阐述自己的专业兴趣与大学规划",
+        "result_text": "父母理解了你的想法与自立决心，家庭支持度与经济底盘更加稳固！",
+        "cost": {
+          "TU": 1,
+          "EP": 10
+        },
+        "variable_delta": {
+          "family": 8,
+          "health": 5
+        },
+        "tag_add": [
+          "FLAG_PU_FAMILY_SUPPORT"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "随口顺着长辈应和“打算考公考研”，避免争论",
+        "result_text": "聚餐在平静中度过，你继续按部就班过完寒假。",
+        "cost": {
+          "TU": 0,
+          "EP": 5
+        },
+        "variable_delta": {
+          "family": 2
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "RO_000",
+    "title": "大一下校园漫步：心动与青涩萌芽",
+    "package": "RO",
+    "type": "NORMAL",
+    "priority": "P2",
+    "min_month": 6,
+    "max_month": 9,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "social": 35
+      }
+    },
+    "content": {
+      "background": "春暖花开的四月傍晚，在通识课小组合作中认识的同学约你一起在操场散步自习。",
+      "scene": "晚风吹拂，两人聊起各自的家乡、喜爱的音乐和对未来的迷茫，气氛微妙而美好。",
+      "conflict": "是真诚表达心意开启一段校园恋爱，还是保持克制专注学业？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "顺从心意！赠送心仪的小礼物，确立恋爱关系",
+        "result_text": "你们确立了恋爱关系！恋爱值跃升至甜蜜稳定区间，彼此有了情感陪伴与自习伙伴！",
+        "cost": {
+          "TU": 2,
+          "EP": 15
+        },
+        "variable_delta": {
+          "romance": 35,
+          "health": 8,
+          "social": 5
+        },
+        "tag_add": [
+          "FLAG_RO_DATING"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "保持好友距离，将精力专注于专业课与自律",
+        "result_text": "你们成为了无话不谈的挚友，你继续保持心无旁骛的单身自习状态。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "focus": 8,
+          "academic": 4
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "FA_001",
+    "title": "突如其来的生活费缺口与兼职抉择",
+    "package": "FA",
+    "type": "CRISIS",
+    "priority": "P0",
+    "min_month": 6,
+    "max_month": 30,
+    "repeatable": true,
+    "unlock_condition": {
+      "max_vars": {
+        "family": 40
+      }
+    },
+    "content": {
+      "background": "家中因突发经济周转困难，本月无法按时汇寄生活费，饭卡余额告急。",
+      "scene": "你必须在本月解决生活费问题，否则连基本伙食都无法保障。",
+      "conflict": "是认领校内勤工俭学与晚间家教自立自强，还是省吃俭用借钱度日？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "认领校内勤工俭学与晚间家教（自立脱困）",
+        "result_text": "你做完了家教并在食堂打饭，虽然疲惫，但拿着自己赚的生活费，家庭经济压力明显缓解，父母对你的自立感到欣慰！",
+        "cost": {
+          "TU": 2,
+          "EP": 30
+        },
+        "variable_delta": {
+          "family": 8,
+          "health": -6,
+          "delivery": 5
+        },
+        "tag_add": [
+          "FLAG_FA_PARTTIME_INDEPENDENT"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "极度缩减开支，向好友借款应急",
+        "result_text": "你每天只吃馒头面条省下时间，虽然保全了自习时长，但持续的饥饿与焦虑让你身心俱疲。",
+        "cost": {
+          "TU": 0,
+          "EP": 15
+        },
+        "variable_delta": {
+          "health": -12,
+          "social": -5,
+          "focus": -4
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "HE_001",
+    "title": "连续熬夜后的身心透支警告",
+    "package": "HE",
+    "type": "CRISIS",
+    "priority": "P0",
+    "min_month": 2,
+    "max_month": 42,
+    "repeatable": true,
+    "unlock_condition": {
+      "max_vars": {
+        "health": 35
+      }
+    },
+    "content": {
+      "background": "近期高强度的多线连轴转，让你出现了严重的偏头痛与免疫力下降。",
+      "scene": "校医院医生警告你必须立刻休整，否则可能引发急性心肌炎或被迫休学住院。",
+      "conflict": "是推掉本月所有非核心活动静心疗休养，还是咬牙硬撑继续赶进度？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "全面减负！周末去公园散步并执行规律早睡",
+        "result_text": "你推掉了非必要的琐事，好好睡了几个安稳觉。你的气色明显好转，精力上限重新稳固！",
+        "cost": {
+          "TU": 2,
+          "EP": -20
+        },
+        "variable_delta": {
+          "health": 15,
+          "focus": 8
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "喝红牛与浓咖啡，咬牙硬扛继续赶进度",
+        "result_text": "咖啡因暂时麻痹了神经，但月中你突发高烧卧床三天，落下了多项作业与任务，适得其反！",
+        "cost": {
+          "TU": 1,
+          "EP": 35
+        },
+        "variable_delta": {
+          "health": -20,
+          "academic": -8,
+          "delivery": -10
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "AC_003",
+    "title": "数据结构核心大作业与队友摆烂危机",
+    "package": "AC",
+    "type": "CRITICAL",
+    "priority": "P1",
+    "min_month": 13,
+    "max_month": 15,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_in": [
+        13,
+        14
+      ]
+    },
+    "content": {
+      "background": "大二核心专业课要求 3 人组队完成一个复杂的文件检索与索引树系统。",
+      "scene": "距离答辩仅剩 3 天，两个队友突然失联摸鱼，核心算法模块完全空白。",
+      "conflict": "是独自硬扛通宵补完核心代码，还是向老师举报申请延期？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "独自硬扛！通宵重构 B+ 树索引并独立答辩",
+        "result_text": "你一个人完成了整个系统的核心代码并在答辩中惊艳全场！老师给出了最高评价，交付力与硬实力大幅跃升！",
+        "cost": {
+          "TU": 3,
+          "EP": 45
+        },
+        "variable_delta": {
+          "skill": 15,
+          "delivery": 18,
+          "portfolio": 12,
+          "academic": 8,
+          "health": -12
+        },
+        "tag_add": [
+          "FLAG_AC_SOLO_CARRIER"
+        ],
+        "resume_entry": {
+          "category": "PROJECT_EXP",
+          "chain_id": "EXP_AC_DS_01",
+          "stage_contribution": "CORE",
+          "title": "核心数据结构·高性能文件检索与 B+ 树索引系统",
+          "description": "独立负责高并发文件检索索引树底层实现与内存管理，答辩获专业第一评价。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "向老师实名说明情况，申请降级及格验收",
+        "result_text": "老师协调给予了及格成绩，你省下了通宵的体力，但项目成果较为平庸。",
+        "cost": {
+          "TU": 1,
+          "EP": 10
+        },
+        "variable_delta": {
+          "academic": 4,
+          "reputation": -3
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "RO_001",
+    "title": "一周年纪念日与项目 DDL 冲突",
+    "package": "RO",
+    "type": "CRITICAL",
+    "priority": "P2",
+    "min_month": 13,
+    "max_month": 36,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "romance": 35
+      }
+    },
+    "content": {
+      "background": "今晚是与伴侣确立关系的一周年纪念日，早已订好餐厅；然而下午团队项目突发严重 Bug 必须今晚修复。",
+      "scene": "伴侣已在餐厅等待，而项目群里催促必须 9 点前提交代码，否则影响明早展示。",
+      "conflict": "是准时赴约维系感情，还是留在机房修 Bug 兑现项目承诺？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "准时赴约！向团队诚恳请假并在次日清晨补救",
+        "result_text": "你放下电脑赶往餐厅，伴侣看到捧着礼物的你露出了开心的笑容。稳定的亲密关系为你提供了巨大的精神慰藉！",
+        "cost": {
+          "TU": 2,
+          "EP": 20
+        },
+        "variable_delta": {
+          "romance": 15,
+          "reputation": -4,
+          "delivery": -3,
+          "health": 4
+        },
+        "tag_add": [
+          "FLAG_RO_ROMANTIC_DEVOTED"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "留在机房紧急修 Bug，向伴侣诚恳道歉改天补过",
+        "result_text": "你一直调试代码到深夜，Bug 终于修好了，但看着手机里伴侣发来的“没事，你先忙吧”，你陷入了情绪内耗。",
+        "cost": {
+          "TU": 2,
+          "EP": 25
+        },
+        "variable_delta": {
+          "delivery": 12,
+          "reputation": 8,
+          "romance": -12,
+          "focus": -5
+        },
+        "tag_add": [
+          "FLAG_RO_DATE_BROKEN"
+        ]
+      }
+    ]
+  },
+  {
+    "event_id": "AI_001",
+    "title": "开源社区里的神秘校友项目",
+    "package": "AI",
+    "type": "HIDDEN",
+    "priority": "P3",
+    "min_month": 16,
+    "max_month": 20,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "skill": 25,
+        "social": 25
+      },
+      "ailab_phase": "HIDDEN"
+    },
+    "content": {
+      "background": "你在 GitHub 上研究前沿大模型 Agent 架构时，偶然在代码提交记录中发现核心作者是本校计算机学院的学长。",
+      "scene": "仓库代码极为严谨，Issue 区正在招募同学共同复现多智能体协作框架。",
+      "conflict": "是主动提交 Demo 代码建立联系，还是仅仅点击 Star 吃灰？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "克隆代码，熬夜跑通 Demo 并向学长发送邮件交流",
+        "result_text": "学长回信道：“代码写得很干净！我们实验室在筹备新项目，大三有兴趣可以来坐坐。” AI-Lab 跃迁至【线索萌芽 (FORESHADOW)】！",
+        "cost": {
+          "TU": 2,
+          "EP": 25
+        },
+        "variable_delta": {
+          "skill": 10,
+          "ai_depth": 8,
+          "delivery": 5
+        },
+        "route_update": {
+          "ailab": "FORESHADOW"
+        },
+        "tag_add": [
+          "FLAG_AI_MET_SENIOR"
+        ],
+        "resume_entry": {
+          "category": "PROJECT_EXP",
+          "chain_id": "EXP_AI_LAB_01",
+          "stage_contribution": "INTRO",
+          "title": "前沿生成式 AI 与 Agent 智能体开源项目复现",
+          "description": "独立复现工业级多智能体协同框架 Demo，与校内前沿极客团队建立技术交流通道。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "点击 Star 收藏，继续完成手头日常作业",
+        "result_text": "你收藏了这个仓库，并把它列入了长期的学习清单中。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "skill": 3
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "WK_001",
+    "title": "大二下职业探索：首份中小型企业日常实习",
+    "package": "WK",
+    "type": "ROUTE",
+    "priority": "P2",
+    "min_month": 16,
+    "max_month": 20,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "skill": 30,
+        "portfolio": 15
+      }
+    },
+    "content": {
+      "background": "本地一家科技初创公司正在招募日常技术实习生，提供真实的代码库与微服务开发实践。",
+      "scene": "每周需保证 2 天到岗，可以接触真实职场交付流程，但会压缩课余自由时间。",
+      "conflict": "是开启人生第一份日常实习积累简历，还是留在校内刷题？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "投递面试并入职实习！体验真实职场项目",
+        "result_text": "你成功通过面试并入职！在导师带领下提交了人生第一批生产环境代码，工作路线进入【可选择】！",
+        "cost": {
+          "TU": 3,
+          "EP": 35
+        },
+        "variable_delta": {
+          "portfolio": 15,
+          "delivery": 12,
+          "skill": 8,
+          "social": 5
+        },
+        "route_update": {
+          "work": "AVAILABLE"
+        },
+        "tag_add": [
+          "FLAG_WK_FIRST_INTERN"
+        ],
+        "resume_entry": {
+          "category": "INTERNSHIP",
+          "chain_id": "EXP_WK_INTERN_01",
+          "stage_contribution": "PARTICIPANT",
+          "title": "初创科技公司·软件开发日常实习生",
+          "description": "参与业务中台微服务模块重构，编写单元测试与接口文档，沉淀首批工业级代码规范。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "暂不实习，留在学校深耕专业基础课",
+        "result_text": "你选择留在校内专注课程复习，避免了通勤奔波，保持了稳定的学业成绩。",
+        "cost": {
+          "TU": 1,
+          "EP": 10
+        },
+        "variable_delta": {
+          "academic": 6,
+          "health": 4
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "SO_003",
+    "title": "全国大学生数学建模 / 蓝桥杯组队攻坚",
+    "package": "SO",
+    "type": "OPPORTUNITY",
+    "priority": "P2",
+    "min_month": 17,
+    "max_month": 19,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "academic": 60
+      }
+    },
+    "content": {
+      "background": "国家级大学生学科竞赛报名开启，获奖成果对保研加分和求职简历至关重要。",
+      "scene": "三天三夜的封闭式论文与算法攻关，需要极强的团队分工与抗压能力。",
+      "conflict": "是组队参赛冲击国家级奖项，还是利用周末休息？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "全力以赴！作为队长负责核心算法建模与论文撰写",
+        "result_text": "经过 72 小时极限奋战，队伍最终斩获国家二等奖！学术声誉与保研竞争力大幅增强！",
+        "cost": {
+          "TU": 3,
+          "EP": 40
+        },
+        "variable_delta": {
+          "portfolio": 15,
+          "research": 12,
+          "reputation": 15,
+          "health": -10
+        },
+        "tag_add": [
+          "FLAG_COMPETITION_NATIONAL_AWARD"
+        ],
+        "resume_entry": {
+          "category": "HONORS",
+          "chain_id": "EXP_COMPETITION_01",
+          "stage_contribution": "CORE",
+          "title": "全国大学生数学建模竞赛国家二等奖",
+          "description": "担任队长主导算法模型设计与全真数据推演，完成高水平竞赛论文撰写并获奖。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "放弃参赛，把时间留给期末考试复习",
+        "result_text": "你保全了身心精力，在接下来的期末复习中稳扎稳打。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "academic": 5,
+          "health": 5
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "AI_002",
+    "title": "咖啡厅深聊：AI-Lab 入组试做考核",
+    "package": "AI",
+    "type": "HIDDEN",
+    "priority": "P2",
+    "min_month": 21,
+    "max_month": 24,
+    "repeatable": false,
+    "unlock_condition": {
+      "ailab_phase": "FORESHADOW",
+      "min_vars": {
+        "skill": 40,
+        "delivery": 30
+      }
+    },
+    "content": {
+      "background": "大三开学初，AI-Lab 学长约你在校内咖啡厅见面，递给你一份工业级大模型微调与 RAG 任务卡。",
+      "scene": "“实验室不招打卡混日子的。这是为期两个月的试做任务，按时交付才能正式入组，每月需固定投入时间。”",
+      "conflict": "是正式接受高负荷技术考核，还是以学业与考研为重婉拒？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "正式签署任务卡！认领 RAG 检索增强开发任务",
+        "result_text": "你正式认领了任务卡，AI-Lab 跃迁至【深度交付 (ACTIVE)】！每月将固定扣除 3 TU + 35 EP 驻留成本，开启极客进阶之路！",
+        "cost": {
+          "TU": 2,
+          "EP": 30
+        },
+        "variable_delta": {
+          "skill": 12,
+          "ai_depth": 15,
+          "delivery": 8,
+          "reputation": 10
+        },
+        "route_update": {
+          "ailab": "ACTIVE"
+        },
+        "tag_add": [
+          "FLAG_AI_LAB_ACTIVE_MEMBER"
+        ],
+        "resume_entry": {
+          "category": "PROJECT_EXP",
+          "chain_id": "EXP_AI_LAB_01",
+          "stage_contribution": "PARTICIPANT",
+          "title": "AI-Lab 核心开发者·企业级 RAG 知识库检索系统",
+          "description": "作为核心开发者完成微调与向量召回优化，实现生产环境高精度问答闭环。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "坦诚告知当前精力需倾斜课业与升学，体面婉拒",
+        "result_text": "学长表示理解：“以后有交流随时来玩。”你体面退出了实验室高负荷线，保留了极佳的师长口碑！",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "reputation": 10,
+          "focus": 10
+        },
+        "route_update": {
+          "ailab": "EXITED"
+        },
+        "tag_add": [
+          "FLAG_AI_POLITELY_EXITED"
+        ]
+      }
+    ]
+  },
+  {
+    "event_id": "GE_000",
+    "title": "大三上关键抉择：确立考研统考主路线",
+    "package": "GE",
+    "type": "ROUTE",
+    "priority": "P1",
+    "min_month": 21,
+    "max_month": 25,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_in": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ]
+    },
+    "content": {
+      "background": "大三上学期，身边的同学开始明确分化为考研、保研与找工作三大阵营。",
+      "scene": "你看着目标 985 院校的历年专业课真题与统考科目，深知一旦开启备战，必须耐得住一整年的寂寞。",
+      "conflict": "是正式确立考研为主路线并启动一轮复习，还是继续观望？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "坚定考研！确立考研主路线并启动数学与专业课复习",
+        "result_text": "考研路线正式进入【进行中 (PRIMARY)】！每月固定投入 5 TU + 50 EP，备考值 exam_prep 开始稳定累积！",
+        "cost": {
+          "TU": 3,
+          "EP": 30
+        },
+        "variable_delta": {
+          "focus": 15,
+          "academic": 8
+        },
+        "route_update": {
+          "postgrad_exam": "PRIMARY"
+        },
+        "tag_add": [
+          "FLAG_GE_PRIMARY_SET"
+        ]
+      },
+      {
+        "choice_id": "B",
+        "text": "不走考研，保持灵活，主攻实习或保研",
+        "result_text": "你决定不参加全国统考考研，释放出的时间可全力投入校招求职或保研推免。",
+        "cost": {
+          "TU": 1,
+          "EP": 5
+        },
+        "variable_delta": {
+          "social": 5
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "RE_000",
+    "title": "大三下名校保研夏令营与预推免申报",
+    "package": "RE",
+    "type": "ROUTE",
+    "priority": "P1",
+    "min_month": 27,
+    "max_month": 30,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "academic": 80
+      }
+    },
+    "content": {
+      "background": "各大顶尖高校（清北华五）开放优秀大学生暑期夏令营申报，提供提前锁定推免名额的机会。",
+      "scene": "需要提交三年成绩单、两封专家推荐信与学术论文/项目成果材料，并在 6 月参加全英文线上考核。",
+      "conflict": "是集中精力打磨材料冲刺名校夏令营，还是求稳等待本校推免？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "冲击顶尖夏令营！联系外校博导并提交研究成果",
+        "result_text": "你的扎实绩点与高质项目经历通过了专家初筛，成功获得名校夏令营“优秀营员”评定！保研路线进入【可选择】！",
+        "cost": {
+          "TU": 3,
+          "EP": 35
+        },
+        "variable_delta": {
+          "research": 18,
+          "portfolio": 10,
+          "reputation": 15
+        },
+        "route_update": {
+          "postgrad_rec": "AVAILABLE"
+        },
+        "tag_add": [
+          "FLAG_RE_EXCELLENT_CAMPER"
+        ],
+        "resume_entry": {
+          "category": "RESEARCH",
+          "chain_id": "EXP_RE_CAMP_01",
+          "stage_contribution": "CORE",
+          "title": "顶尖名校优秀大学生学术夏令营优秀营员",
+          "description": "全英文通过前沿学术报告答辩与专业综合面试，获外校保研预录取资格。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "求稳准备本校保研，避免高强度外校竞争",
+        "result_text": "你选择稳固本校导师关系，保研路线平稳推进。",
+        "cost": {
+          "TU": 1,
+          "EP": 10
+        },
+        "variable_delta": {
+          "academic": 6,
+          "reputation": 5
+        },
+        "route_update": {
+          "postgrad_rec": "AVAILABLE"
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "WK_003",
+    "title": "头部名企暑期实习招聘与转正答辩",
+    "package": "WK",
+    "type": "ROUTE",
+    "priority": "P1",
+    "min_month": 28,
+    "max_month": 31,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "portfolio": 35,
+        "skill": 40
+      }
+    },
+    "content": {
+      "background": "大三下暑期实习（7-8月）是通往大厂秋招转正直通车最重要的前哨战。",
+      "scene": "在两个月的高强度实习中，你需要独立交付一个线上业务模块，并在 8 月底参加转正评审答辩。",
+      "conflict": "是全力攻坚业务需求争取秋招直通转正，还是适度完成交差？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "全力以赴！按时高质交付核心模块并完成转正答辩",
+        "result_text": "转正答辩全票通过！部门主管为你锁定了秋招提前批正式录用直通卡！工作路线进入【进行中】！",
+        "cost": {
+          "TU": 4,
+          "EP": 45
+        },
+        "variable_delta": {
+          "portfolio": 20,
+          "delivery": 18,
+          "reputation": 15,
+          "skill": 10
+        },
+        "route_update": {
+          "work": "PRIMARY"
+        },
+        "tag_add": [
+          "FLAG_WK_INTERN_RETURN_PASS"
+        ],
+        "resume_entry": {
+          "category": "INTERNSHIP",
+          "chain_id": "EXP_WK_INTERN_02",
+          "stage_contribution": "CORE",
+          "title": "一线互联网名企·暑期软件开发核心实习生",
+          "description": "主导线上业务服务重构，优化核心接口响应延迟 30%，答辩通过获校招转正 Offer 直通卡。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "按常规标准完成分配工作，不争抢转正",
+        "result_text": "你收获了一份合格的实习经历证明，但未能锁定提前转正，将在秋招与其他候选人同台竞争。",
+        "cost": {
+          "TU": 2,
+          "EP": 20
+        },
+        "variable_delta": {
+          "portfolio": 10,
+          "delivery": 8
+        },
+        "route_update": {
+          "work": "AVAILABLE"
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "RE_001",
+    "title": "9月校内推免资格正式遴选公示",
+    "package": "RE",
+    "type": "ROUTE",
+    "priority": "P0",
+    "min_month": 33,
+    "max_month": 33,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "academic": 80
+      },
+      "route_status": {
+        "postgrad_rec": [
+          "POTENTIAL",
+          "AVAILABLE",
+          "PRIMARY"
+        ]
+      }
+    },
+    "content": {
+      "background": "大四刚开学的 9 月，教务处正式公示本届保研推免绩点排名与综合答辩加分名单。",
+      "scene": "你的三年平均绩点稳居专业前列，加上竞赛与科研加分，推免名额触手可及。",
+      "conflict": "提交最终推免审核表与导师推荐信！"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "提交推免资格表，正式确认保研推荐免试！",
+        "result_text": "公示期结束无异议！你以专业综合第一的成绩成功保研清北华五顶尖名校直博/学硕！保研路线圆满达成！",
+        "cost": {
+          "TU": 2,
+          "EP": 20
+        },
+        "variable_delta": {
+          "academic": 15,
+          "reputation": 20,
+          "research": 15
+        },
+        "route_update": {
+          "postgrad_rec": "COMPLETED"
+        },
+        "tag_add": [
+          "FLAG_RE_TOP_OFFER"
+        ],
+        "resume_entry": {
+          "category": "HONORS",
+          "chain_id": "EXP_RE_HONOR_01",
+          "stage_contribution": "CORE",
+          "title": "推荐免试攻读硕士/博士研究生 (顶级名校推免)",
+          "description": "专业排名前 5%，综合科研与竞赛成果获直博/学术型硕士全额奖学金推免资格。"
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "WK_002",
+    "title": "大四上秋招决战：头部大厂核心研发终面",
+    "package": "WK",
+    "type": "ROUTE",
+    "priority": "P0",
+    "min_month": 33,
+    "max_month": 35,
+    "repeatable": false,
+    "unlock_condition": {
+      "min_vars": {
+        "portfolio": 45,
+        "skill": 45
+      },
+      "route_status": {
+        "work": [
+          "AVAILABLE",
+          "PRIMARY"
+        ]
+      }
+    },
+    "content": {
+      "background": "金九银十秋招巅峰期，你通过了行业顶级名企的笔试与三轮技术面试，迎来了总监终面与 HR 面。",
+      "scene": "面试官对你的项目架构与突发 Bug 应对能力进行了长达一小时的深度拷问。",
+      "conflict": "自信阐述你的系统设计思路与极客攻坚历程！"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "条理清晰展示作品集与底层架构，自信应对答辩",
+        "result_text": "总监对你的工程落地能力与技术深度极为赞赏！两周后，你正式收到了年薪 35W+ 的顶尖大厂核心研发 Offer (SSP)！工作路线圆满达成！",
+        "cost": {
+          "TU": 3,
+          "EP": 40
+        },
+        "variable_delta": {
+          "reputation": 20,
+          "delivery": 15,
+          "portfolio": 15
+        },
+        "route_update": {
+          "work": "COMPLETED"
+        },
+        "tag_add": [
+          "FLAG_WK_OFFER_SSP"
+        ],
+        "resume_entry": {
+          "category": "HONORS",
+          "chain_id": "EXP_WK_OFFER_01",
+          "stage_contribution": "CORE",
+          "title": "头部顶尖名企·核心研发工程师录用意向 (SSP Offer)",
+          "description": "通过多轮硬核系统设计与架构答辩，斩获高薪核心研发岗录用，锁定高质量校招就业去向。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "求稳表现，选择偏业务向的基础研发岗位沟通",
+        "result_text": "你顺利通过了考核，获得了名企优质研发岗位 Offer (SP)！稳定解决了毕业就业问题！",
+        "cost": {
+          "TU": 2,
+          "EP": 25
+        },
+        "variable_delta": {
+          "reputation": 10,
+          "delivery": 10
+        },
+        "route_update": {
+          "work": "COMPLETED"
+        },
+        "tag_add": [
+          "FLAG_WK_OFFER_SP"
+        ]
+      }
+    ]
+  },
+  {
+    "event_id": "AI_007",
+    "title": "真实战场线：产业 AI 商业项目试做挑战",
+    "package": "AI",
+    "type": "HIDDEN",
+    "priority": "P1",
+    "min_month": 34,
+    "max_month": 37,
+    "repeatable": false,
+    "unlock_condition": {
+      "ailab_phase": "ACTIVE",
+      "min_vars": {
+        "delivery": 60,
+        "reputation": 55,
+        "portfolio": 50
+      }
+    },
+    "content": {
+      "background": "一位已成功创业的极客学长回到实验室，寻找能够独立承接产业级大模型多智能体商业落地项目的同学。",
+      "scene": "没有空洞画饼，直接给出一份高强度的真实商业需求文档与两周 DDL。",
+      "conflict": "是接受最高强度的极客真实战场试炼，还是回归常规路线？"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "接受极客试炼！独立负责商业 Agent 平台开发与交付",
+        "result_text": "你以惊人的交付质量完成了商业闭环，AI-Lab 晋升为【极客战场 (CORE)】！学长正式邀请你毕业后作为核心合伙人加入！",
+        "cost": {
+          "TU": 5,
+          "EP": 60
+        },
+        "variable_delta": {
+          "delivery": 20,
+          "ai_depth": 20,
+          "portfolio": 20,
+          "reputation": 20
+        },
+        "route_update": {
+          "ailab": "CORE"
+        },
+        "tag_add": [
+          "FLAG_AI_CORE_REAL_BATTLE"
+        ],
+        "resume_entry": {
+          "category": "PROJECT_EXP",
+          "chain_id": "EXP_AI_LAB_01",
+          "stage_contribution": "LEADER",
+          "title": "产业级多智能体商业落地平台核心架构师",
+          "description": "独立主导企业级商业化 Agent 平台交付，沉淀高并发高可靠工业代码，获极客创业团队核心合伙人邀请。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "评估精力后体面婉拒，专注常规毕业与求职",
+        "result_text": "学长赞扬你的严谨与诚实，你体面保持了良好的合作关系。",
+        "cost": {
+          "TU": 1,
+          "EP": 10
+        },
+        "variable_delta": {
+          "reputation": 10,
+          "focus": 10
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "GE_001",
+    "title": "全国硕士研究生招生考试：12月初试决战",
+    "package": "GE",
+    "type": "ROUTE",
+    "priority": "P0",
+    "min_month": 36,
+    "max_month": 36,
+    "repeatable": false,
+    "unlock_condition": {
+      "route_status": {
+        "postgrad_exam": [
+          "AVAILABLE",
+          "PRIMARY"
+        ]
+      }
+    },
+    "content": {
+      "background": "寒冬腊月的 12 月最后一个周末，全国硕士研究生统考在清晨打响第一声开考铃。",
+      "scene": "政治、英语、数学与专业课统考试卷依次发下，四年积累在此一举。",
+      "conflict": "沉着冷静答卷，检验全年的备考积累！"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "全神贯注！拼尽全力完成四门科目作答",
+        "result_text": "你稳健作答，发挥出了全部备考水平！依据备考值 exam_prep 进行初试结算：初试高分过线！成功进入次年 3 月复试名单！",
+        "cost": {
+          "TU": 4,
+          "EP": 50
+        },
+        "variable_delta": {
+          "academic": 15,
+          "focus": 15,
+          "health": -10
+        },
+        "route_update": {
+          "postgrad_exam": "COMPLETED"
+        },
+        "tag_add": [
+          "FLAG_GE_PASSED_INITIAL"
+        ],
+        "resume_entry": {
+          "category": "HONORS",
+          "chain_id": "EXP_GE_STUDY_01",
+          "stage_contribution": "CORE",
+          "title": "全国硕士研究生招生考试初试高分过线",
+          "description": "完成高强度系统性统考备考，初试高分入围目标院校复试，展现过硬的学术理论基础。"
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "AC_005",
+    "title": "本科毕业设计：论文盲审与终期答辩",
+    "package": "AC",
+    "type": "CRITICAL",
+    "priority": "P1",
+    "min_month": 40,
+    "max_month": 41,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_in": [
+        40,
+        41
+      ]
+    },
+    "content": {
+      "background": "大四下学期，本科毕业设计论文查重与校外盲审结果出炉。",
+      "scene": "答辩教室内，多位教授正逐页审阅你的毕设代码实现、实验数据与文献综述。",
+      "conflict": "自信上台汇报你大学四年的学术与工程终期大作！"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "条理清晰答辩！展示完整的理论推导与工程实现",
+        "result_text": "毕设答辩全票通过！获评校级优秀毕业设计论文，为大学本科生涯画上圆满句号！",
+        "cost": {
+          "TU": 3,
+          "EP": 30
+        },
+        "variable_delta": {
+          "academic": 12,
+          "reputation": 10,
+          "research": 8
+        },
+        "tag_add": [
+          "FLAG_AC_TOP_THESIS"
+        ],
+        "resume_entry": {
+          "category": "ACADEMIC",
+          "chain_id": "EXP_AC_THESIS_01",
+          "stage_contribution": "CORE",
+          "title": "本科毕业设计获评校级优秀毕业论文",
+          "description": "独立完成高水平毕业设计系统研发与学术论文撰写，查重率低于 5%，获答辩委员会全优评定。"
+        }
+      },
+      {
+        "choice_id": "B",
+        "text": "按标准规范完成基础答辩，顺利通过毕业审查",
+        "result_text": "顺利通过毕设答辩，满足各项毕业与学士学位授予条件。",
+        "cost": {
+          "TU": 1,
+          "EP": 10
+        },
+        "variable_delta": {
+          "academic": 5
+        }
+      }
+    ]
+  },
+  {
+    "event_id": "GRAD_001",
+    "title": "大学四年毕业典礼：挥帽散场与简历收口",
+    "package": "PU",
+    "type": "ROUTE",
+    "priority": "P0",
+    "min_month": 42,
+    "max_month": 42,
+    "repeatable": false,
+    "unlock_condition": {
+      "month_is": 42
+    },
+    "content": {
+      "background": "大四下 6 月，礼堂里奏响毕业歌。四年 46 个月的无数个日夜、选择与汗水在此刻定格。",
+      "scene": "你穿上学士服，与老师、同学和伴侣相拥告别。你的大学四年经历正式凝聚为一份沉甸甸的个人简历。",
+      "conflict": "回顾四年大学路，开启下一段人生征程！"
+    },
+    "choices": [
+      {
+        "choice_id": "A",
+        "text": "拨穗礼成！生成我的专属《大学四年毕业简历》",
+        "result_text": "毕业快乐！系统已根据你四年全部真实决策与沉淀经历，完成了最终毕业结局评估与简历生成！",
+        "cost": {
+          "TU": 0,
+          "EP": 0
+        },
+        "variable_delta": {
+          "reputation": 5
+        }
+      }
+    ]
+  }
+];
