@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'FLAG_AI_CORE_ENTREPRENEUR': { title: '🔥 商业智能体创业技术合伙人', desc: '主导企业级 Multi-Agent 架构研发并助力团队完成早期融资' },
     'FLAG_AI_JOINED_DEEP': { title: '🧪 前沿极客实战组正式成员', desc: '深度参与工业级开源项目交付并承担每月核心代码合并' },
     'FLAG_AI_POLITELY_EXITED': { title: '🍃 极客圈人脉保留', desc: '体面告别高强度研发日常，保留了良好的行业人脉' },
+    'FLAG_REC_EXITED_FOR_WORK': { title: '🚀 毅然弃保从工·产业拓荒', desc: '在获得名校保研名额后遵从内心志向，毅然投身产业界与商业前沿' },
     'FLAG_AC_THESIS_EXCELLENT': { title: '🌟 校级优秀本科毕业设计', desc: '毕业设计系统架构全票通过答辩并获评校级优秀毕业论文' }
   };
 
