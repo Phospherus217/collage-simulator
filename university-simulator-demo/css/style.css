@@ -4,7 +4,7 @@
    - 极简、现代、克制、轻游戏化 (聚焦当前人生、当前事件、单屏决策)
    - 居中自适应容器，彻底消除左右偏移与横向溢出
    - 完备支持 Desktop (>1024px)、Tablet (768~1023px)、Mobile (<768px)
-   - 统一 Header、Main Content、Bottom Nav 的居中对齐坐标系
+   - 原生 App 级触控体验：支持 iOS Safe Area、触摸反馈、防误选与 Bottom Sheet
    ========================================================================== */
 
 :root {
@@ -74,6 +74,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -98,6 +99,16 @@ body {
   overflow-x: hidden;
 }
 
+button, input, select {
+  font-family: inherit;
+  touch-action: manipulation;
+}
+
+button {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 img, svg {
   max-width: 100%;
   height: auto;
@@ -112,6 +123,7 @@ img, svg {
   top: 0;
   z-index: 50;
   box-shadow: var(--shadow-xs);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .top-bar-inner {
@@ -234,6 +246,10 @@ img, svg {
   flex-shrink: 0;
 }
 
+.btn-icon-menu:active {
+  transform: scale(0.92);
+}
+
 .btn-icon-menu:hover {
   background: var(--bg-card-subtle);
   color: var(--text-main);
@@ -246,7 +262,7 @@ img, svg {
   width: 100%;
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 24px 20px 84px 20px;
+  padding: 20px 20px calc(76px + env(safe-area-inset-bottom, 0px)) 20px;
   min-width: 0;
 }
 
@@ -269,13 +285,13 @@ img, svg {
 .panel-inner-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
   width: 100%;
   min-width: 0;
 }
 
 .panel-header {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .panel-title {
@@ -317,15 +333,22 @@ img, svg {
   width: 100%;
 }
 
-/* 多事件切换胶囊 (响应式 wrap，绝不溢出) */
+/* 多事件切换胶囊 (自适应横向滚动条) */
 .event-switch-bar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-bottom: 4px;
   width: 100%;
   min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.event-switch-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .switch-label {
@@ -347,7 +370,7 @@ img, svg {
 .switch-chip {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: var(--radius-full);
   font-size: 0.78rem;
   font-weight: 600;
@@ -357,6 +380,12 @@ img, svg {
   max-width: 100%;
   overflow-wrap: anywhere;
   word-break: normal;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.switch-chip:active {
+  transform: scale(0.95);
 }
 
 .switch-chip:hover {
@@ -375,7 +404,7 @@ img, svg {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 22px;
   box-shadow: var(--shadow-sm);
   width: 100%;
   min-width: 0;
@@ -385,7 +414,7 @@ img, svg {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .event-tag {
@@ -406,11 +435,11 @@ img, svg {
 }
 
 .event-headline {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--text-main);
-  line-height: 1.35;
-  margin-bottom: 14px;
+  line-height: 1.4;
+  margin-bottom: 12px;
   letter-spacing: -0.3px;
   overflow-wrap: anywhere;
   word-break: normal;
@@ -421,7 +450,7 @@ img, svg {
   border-left: 3.5px solid var(--primary);
   padding: 14px 16px;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   line-height: 1.7;
   color: var(--text-body);
   margin-bottom: 16px;
@@ -433,11 +462,11 @@ img, svg {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--text-muted);
   border-top: 1px solid var(--border-subtle);
-  padding-top: 14px;
+  padding-top: 12px;
 }
 
 .prompt-icon {
@@ -476,7 +505,8 @@ img, svg {
 }
 
 .action-card:active:not(.disabled) {
-  transform: translateY(0);
+  transform: scale(0.985);
+  background: var(--bg-card-subtle);
 }
 
 .action-card.disabled {
@@ -489,11 +519,11 @@ img, svg {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
 }
 
 .action-card-title {
-  font-size: 1rem;
+  font-size: 0.98rem;
   font-weight: 800;
   color: var(--text-main);
   display: flex;
@@ -561,7 +591,7 @@ img, svg {
 .action-cost-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -571,6 +601,10 @@ img, svg {
   align-items: center;
   gap: 3px;
   white-space: nowrap;
+  background: var(--bg-card-subtle);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
 }
 
 .action-disabled-hint {
@@ -596,18 +630,18 @@ img, svg {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  padding: 28px 24px;
+  padding: 24px 20px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
   width: 100%;
   min-width: 0;
 }
 
 .result-header {
   border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 16px;
+  padding-bottom: 14px;
 }
 
 .result-badge {
@@ -623,7 +657,7 @@ img, svg {
 }
 
 .result-title {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--text-main);
   overflow-wrap: anywhere;
@@ -631,7 +665,7 @@ img, svg {
 }
 
 .result-subtitle {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
   margin-top: 2px;
   overflow-wrap: anywhere;
@@ -641,7 +675,7 @@ img, svg {
   background: var(--bg-card-subtle);
   border: 1px solid var(--border-subtle);
   border-left: 4px solid var(--success);
-  padding: 16px 18px;
+  padding: 14px 16px;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   overflow-wrap: anywhere;
   word-break: normal;
@@ -655,7 +689,7 @@ img, svg {
 }
 
 .story-text {
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   line-height: 1.7;
   color: var(--text-body);
   overflow-wrap: anywhere;
@@ -666,7 +700,7 @@ img, svg {
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-card);
-  padding: 16px 18px;
+  padding: 14px 16px;
 }
 
 .changes-label {
@@ -728,14 +762,13 @@ img, svg {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-primary-advance:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.btn-primary-advance:active {
+  transform: scale(0.985);
 }
 
-.btn-primary-advance:active {
-  transform: translateY(0);
+.btn-primary-advance:hover {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-md);
 }
 
 /* ================= 右侧人物简要状态 (Quick Status Sidebar) ================= */
@@ -845,6 +878,10 @@ img, svg {
   width: 100%;
 }
 
+.btn-link-growth:active {
+  transform: scale(0.985);
+}
+
 .btn-link-growth:hover {
   background: var(--primary-light);
   border-color: var(--primary-border);
@@ -855,18 +892,18 @@ img, svg {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-card);
-  padding: 20px 24px;
+  padding: 18px 20px;
   box-shadow: var(--shadow-xs);
   width: 100%;
   min-width: 0;
 }
 
 .card-section-title {
-  font-size: 1rem;
+  font-size: 0.96rem;
   font-weight: 800;
   color: var(--text-main);
-  margin-bottom: 16px;
-  padding-bottom: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   justify-content: space-between;
@@ -875,8 +912,8 @@ img, svg {
 
 .states-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 12px;
   width: 100%;
 }
 
@@ -929,7 +966,7 @@ img, svg {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0 20px 0;
+  margin: 10px 0 16px 0;
   width: 100%;
   min-width: 0;
 }
@@ -976,7 +1013,7 @@ img, svg {
 .routes-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
   min-width: 0;
 }
@@ -985,7 +1022,7 @@ img, svg {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-card);
-  padding: 20px 22px;
+  padding: 18px 20px;
   box-shadow: var(--shadow-xs);
   transition: all 0.2s;
   width: 100%;
@@ -1002,24 +1039,24 @@ img, svg {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
 }
 
 .route-title-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 
 .route-icon {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 
 .route-name {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--text-main);
   overflow-wrap: anywhere;
@@ -1028,12 +1065,12 @@ img, svg {
 .route-progress-wrap {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .route-progress-bar-container {
-  width: 120px;
+  width: 100px;
   height: 8px;
   background: var(--bg-card-subtle);
   border-radius: var(--radius-full);
@@ -1049,44 +1086,44 @@ img, svg {
 .route-expand-btn {
   background: transparent;
   border: none;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   cursor: pointer;
   white-space: nowrap;
 }
 
 .route-summary-text {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: var(--text-body);
-  margin-top: 10px;
+  margin-top: 8px;
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
 
 .route-detail-drawer {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px dashed var(--border-subtle);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   animation: fadeIn 0.2s ease-out;
 }
 
 .route-detail-block {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .detail-block-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-muted);
 }
 
 .detail-block-content {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   color: var(--text-body);
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -1098,11 +1135,16 @@ img, svg {
   gap: 8px;
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   overflow-x: auto;
   width: 100%;
   min-width: 0;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.history-subtabs::-webkit-scrollbar {
+  display: none;
 }
 
 .subtab-btn {
@@ -1132,7 +1174,7 @@ img, svg {
 .timeline-container {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
   min-width: 0;
 }
@@ -1141,7 +1183,7 @@ img, svg {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-card);
-  padding: 16px 18px;
+  padding: 14px 16px;
   box-shadow: var(--shadow-xs);
   display: flex;
   flex-direction: column;
@@ -1165,14 +1207,14 @@ img, svg {
 }
 
 .timeline-title {
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   font-weight: 800;
   color: var(--text-main);
   overflow-wrap: anywhere;
 }
 
 .timeline-desc {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   color: var(--text-body);
   line-height: 1.6;
   overflow-wrap: anywhere;
@@ -1187,8 +1229,8 @@ img, svg {
 
 .milestones-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 10px;
   width: 100%;
 }
 
@@ -1196,7 +1238,7 @@ img, svg {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-card);
-  padding: 14px 16px;
+  padding: 12px 14px;
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -1205,19 +1247,19 @@ img, svg {
 }
 
 .milestone-card-icon {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 
 .milestone-card-title {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 800;
   color: var(--text-main);
   overflow-wrap: anywhere;
 }
 
 .milestone-card-desc {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
   margin-top: 2px;
   overflow-wrap: anywhere;
@@ -1235,7 +1277,7 @@ img, svg {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-card);
-  padding: 16px 18px;
+  padding: 14px 16px;
   box-shadow: var(--shadow-xs);
   width: 100%;
   min-width: 0;
@@ -1251,7 +1293,7 @@ img, svg {
 }
 
 .project-card-name {
-  font-size: 0.96rem;
+  font-size: 0.92rem;
   font-weight: 800;
   color: var(--text-main);
   overflow-wrap: anywhere;
@@ -1269,7 +1311,7 @@ img, svg {
 }
 
 .project-card-desc {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   color: var(--text-body);
   line-height: 1.6;
   overflow-wrap: anywhere;
@@ -1287,6 +1329,7 @@ img, svg {
   border-top: 1px solid var(--border-subtle);
   z-index: 100;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .bottom-nav-inner {
@@ -1310,7 +1353,7 @@ img, svg {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   cursor: pointer;
   color: var(--text-muted);
   transition: all 0.15s;
@@ -1390,6 +1433,7 @@ img, svg {
   line-height: 1;
   color: var(--text-muted);
   cursor: pointer;
+  padding: 4px 8px;
 }
 
 .btn-close:hover {
@@ -1415,6 +1459,10 @@ img, svg {
   text-align: left;
   cursor: pointer;
   transition: all 0.15s;
+}
+
+.menu-item:active {
+  transform: scale(0.98);
 }
 
 .menu-item:hover {
@@ -1590,6 +1638,7 @@ img, svg {
   line-height: 1;
   color: var(--text-muted);
   cursor: pointer;
+  padding: 4px 8px;
 }
 
 .resume-modal-body {
@@ -1610,7 +1659,7 @@ img, svg {
 
 .outcome-cert-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .cert-stamp-badge {
@@ -1626,7 +1675,7 @@ img, svg {
 }
 
 .cert-main-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 900;
   color: #0f172a;
   overflow-wrap: anywhere;
@@ -1641,8 +1690,8 @@ img, svg {
   background: #eff6ff;
   border: 1.5px solid #bfdbfe;
   border-radius: var(--radius-card);
-  padding: 16px 20px;
-  margin-bottom: 20px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
   text-align: center;
 }
 
@@ -1654,7 +1703,7 @@ img, svg {
 }
 
 .outcome-dest-name {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 900;
   color: #1e3a8a;
   margin: 4px 0 8px 0;
@@ -1679,7 +1728,7 @@ img, svg {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   width: 100%;
 }
 
@@ -1721,15 +1770,15 @@ img, svg {
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: var(--radius-sm);
-  padding: 32px;
+  padding: 28px;
   color: #1e293b;
   width: 100%;
 }
 
 .resume-paper-header {
   border-bottom: 2px solid #1e293b;
-  padding-bottom: 14px;
-  margin-bottom: 16px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -1737,29 +1786,29 @@ img, svg {
 }
 
 .resume-candidate-name {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #0f172a;
 }
 
 .resume-target-title {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--primary);
 }
 
 .resume-contact-info {
   text-align: right;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
 }
 
 .resume-block {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .resume-block-heading {
-  font-size: 0.96rem;
+  font-size: 0.94rem;
   font-weight: 800;
   color: #0f172a;
   border-bottom: 1.5px solid #94a3b8;
@@ -1770,13 +1819,13 @@ img, svg {
 .resume-edu-row, .resume-edu-sub {
   display: flex;
   justify-content: space-between;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   gap: 8px;
   flex-wrap: wrap;
 }
 
 .resume-edu-sub {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   margin-top: 2px;
 }
@@ -1789,7 +1838,7 @@ img, svg {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 700;
   gap: 8px;
   flex-wrap: wrap;
@@ -1826,7 +1875,7 @@ img, svg {
 
 .radar-chart-svg {
   width: 100%;
-  max-width: 480px;
+  max-width: 440px;
   height: auto;
 }
 
@@ -1896,8 +1945,27 @@ img, svg {
 
 /* 2. Mobile 移动端 (< 768px) */
 @media (max-width: 767px) {
+  .top-bar-inner {
+    padding: 0 14px;
+    height: 52px;
+  }
+
+  .brand-title {
+    font-size: 0.96rem;
+  }
+
+  .stage-badge {
+    font-size: 0.78rem;
+    padding: 3px 10px;
+  }
+
+  .res-item {
+    font-size: 0.76rem;
+    padding: 3px 8px;
+  }
+
   .app-main {
-    padding: 16px 14px calc(76px + env(safe-area-inset-bottom, 0px)) 14px;
+    padding: 14px 12px calc(76px + env(safe-area-inset-bottom, 0px)) 12px;
   }
 
   .life-sidebar-col {
@@ -1906,20 +1974,23 @@ img, svg {
 
   .current-event-card {
     padding: 18px 16px;
+    border-radius: var(--radius-card);
   }
 
   .event-headline {
     font-size: 1.15rem;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .event-narrative-box {
     font-size: 0.88rem;
     padding: 12px 14px;
+    line-height: 1.65;
   }
 
   .action-card {
     padding: 14px 14px;
+    border-radius: var(--radius-sm);
   }
 
   .action-card-title {
@@ -1928,14 +1999,20 @@ img, svg {
 
   .result-card {
     padding: 20px 16px;
+    border-radius: var(--radius-card);
+  }
+
+  .result-title {
+    font-size: 1.15rem;
   }
 
   .outcome-details-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .standard-resume {
-    padding: 16px;
+    padding: 16px 14px;
   }
 
   .resume-paper-header {
@@ -1947,41 +2024,79 @@ img, svg {
   .resume-contact-info {
     text-align: left;
   }
+
+  .radar-chart-svg {
+    max-width: 320px;
+  }
+
+  .radar-label-title {
+    font-size: 10px;
+  }
+
+  .radar-label-sub {
+    font-size: 8.5px;
+  }
 }
 
 /* 3. Small Mobile 窄屏手机 (< 540px) */
 @media (max-width: 540px) {
   .top-bar-inner {
-    padding: 0 12px;
-    height: auto;
-    min-height: 52px;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding: 0 10px;
+    gap: 6px;
   }
 
   .brand-title {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+  }
+
+  .brand-icon {
+    font-size: 1.1rem;
   }
 
   .stage-badge {
-    font-size: 0.76rem;
-    padding: 2px 8px;
+    font-size: 0.74rem;
+    padding: 2px 7px;
+    gap: 4px;
+  }
+
+  .stage-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .resource-group {
+    gap: 4px;
   }
 
   .res-item {
-    font-size: 0.75rem;
-    padding: 3px 8px;
+    font-size: 0.72rem;
+    padding: 2px 6px;
+    gap: 2px;
+  }
+
+  .btn-icon-menu {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
+  }
+
+  .action-footer-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .action-cost-tags {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .bottom-nav {
     height: 56px;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .bottom-nav-inner {
-    padding: 0 8px;
+    padding: 0 6px;
   }
 
   .nav-icon {
@@ -1992,12 +2107,46 @@ img, svg {
     font-size: 0.72rem;
   }
 
+  /* 移动端模态弹窗化为底部抽屉 Bottom Sheet */
   .modal-overlay {
-    padding: 8px;
+    padding: 0;
+    align-items: flex-end;
   }
 
   .modal-card {
-    max-height: 94dvh;
-    border-radius: var(--radius-card);
+    max-height: 88dvh;
+    max-width: 100%;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    animation: slideUpMobile 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUpMobile {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-header {
+    padding: 14px 16px;
+  }
+
+  .parents-outcome-card {
+    padding: 16px 14px;
+  }
+
+  .outcome-destination-banner {
+    padding: 12px 14px;
+  }
+
+  .outcome-dest-name {
+    font-size: 1.15rem;
+  }
+
+  .cert-main-title {
+    font-size: 1.25rem;
+  }
+
+  .resume-candidate-name {
+    font-size: 1.3rem;
   }
 }
