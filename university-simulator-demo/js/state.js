@@ -122,8 +122,7 @@ const INITIAL_ROUTES = {
  */
 function createInitialState() {
   const initialTimeline = MONTH_TIMELINE[0];
-  const initialBaseHealth = INITIAL_BASIC_STATES.health;
-  const initialEPMax = Math.round(50 + initialBaseHealth * 0.5); // 90 EP
+  const initialEPMax = 90; // 固定精力上限 90 EP
 
   return {
     total_month: 1,

@@ -40,8 +40,8 @@ class IFEngine {
     const r = s.resources;
     const tl = this.getCurrentTimeline();
 
-    // 1. 计算精力上限 EP_max = round(50 + health * 0.5) (保持基础容量稳定)
-    r.EP_max = Math.round(50 + b.health * 0.5);
+    // 1. 精力上限保持固定定死 (90 EP)
+    r.EP_max = 90;
 
     // 2. 月度基础时间与学期课业底噪
     if (tl && tl.is_vacation) {
