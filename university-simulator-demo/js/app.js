@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span class="action-cost-item">⚡ 精力 -${costEP} EP</span>
                 </div>
                 ${!hasEnoughTU ? `<span class="action-disabled-hint">⚠️ 时间不足，无法执行</span>` : ''}
-                ${(hasEnoughTU && isOverdraftRisk) ? `<span class="action-overdraft-warn">⚠️ 精力透支预警 (损耗次月健康)</span>` : ''}
+                ${(hasEnoughTU && isOverdraftRisk) ? `<span class="action-overdraft-warn">⚠️ 精力透支预警 (预支扣减下月恢复量)</span>` : ''}
               </div>
             </div>
           `;
@@ -340,6 +340,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const mapped = FLAG_NARRATIVE_MAP[tag];
             return `<span class="change-pill tag">🏷️ ${mapped ? mapped.title : tag}</span>`;
           }).join('');
+        }
+        if (s.resources.overdraft_EP > 0) {
+          changesHtml += `<span class="change-pill neg">⚡ 透支精力 ${s.resources.overdraft_EP} 点 (预计下月初始可用 ${Math.max(0, s.resources.EP_max - s.resources.overdraft_EP)}/${s.resources.EP_max} EP)</span>`;
         }
         if (!changesHtml) {
           changesHtml = '<span class="change-pill pos">🌿 平稳过渡</span>';

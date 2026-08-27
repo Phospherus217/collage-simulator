@@ -40,9 +40,8 @@ class IFEngine {
     const r = s.resources;
     const tl = this.getCurrentTimeline();
 
-    // 1. 计算精力上限 EP_max = round(50 + health * 0.5)
+    // 1. 计算精力上限 EP_max = round(50 + health * 0.5) (保持基础容量稳定)
     r.EP_max = Math.round(50 + b.health * 0.5);
-    r.EP_current = r.EP_max;
 
     // 2. 月度基础时间与学期课业底噪
     if (tl && tl.is_vacation) {
@@ -55,18 +54,18 @@ class IFEngine {
       r.TU_current = 8;
     }
 
-    // 3. 结算上月透支精力惩罚
-    if (r.overdraft_EP > 0) {
-      const healthDmg = Math.ceil(r.overdraft_EP / 2);
-      b.health = Math.max(0, b.health - healthDmg);
-      r.EP_current = Math.max(0, r.EP_current - r.overdraft_EP);
+    // 3. 结算上月透支精力 (单次结算：仅从本月恢复量中扣除上月预支的 debt，旧债务立即清零，绝不扣减健康或永久上限)
+    const previousDebt = r.overdraft_EP || 0;
+    r.EP_current = Math.max(0, r.EP_max - previousDebt);
+    r.overdraft_EP = 0; // 旧债务在月初完成一次性结算并清零！
+
+    if (previousDebt > 0) {
       s.history.history_log.unshift({
         type: 'SYSTEM',
         month: s.total_month,
-        title: '【月初结算】透支惩罚生效',
-        desc: `上月身心透支，本月基础精力被大幅削减，健康损耗 -${healthDmg} 点。`
+        title: '【月初结算】精力透支扣减',
+        desc: `偿还上月透支预支的 ${previousDebt} 点精力，本月初始可用精力为 ${r.EP_current}/${r.EP_max} EP。本月如在正常精力范围内使用，下月将完全恢复满格。`
       });
-      r.overdraft_EP = 0;
     }
 
     // 4. 扣除进行中主路线的刚性驻留成本 (TU 与 EP)
