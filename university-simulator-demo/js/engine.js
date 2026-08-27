@@ -658,7 +658,7 @@ class IFEngine {
       entries: mergedEntries,
       capabilities: { ...cap },
       basic_states: { ...b },
-      ending: s.final_ending
+      ending: s.final_ending || this.evaluateFinalEnding()
     };
   }
 }

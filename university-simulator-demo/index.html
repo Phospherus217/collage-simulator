@@ -2,158 +2,351 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>大学四年模拟器 v2.0 - 46个月全时段决策与人生模拟系统</title>
-  <meta name="description" content="大学四年模拟器 v2.0 全系统旗舰版，涵盖46个月推进、五大生活状态、七大能力资产、双资源模型、三大主路线、AI-Lab隐藏极客战场与毕业简历收口">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>大学四年模拟器 - 沉浸式人生模拟系统</title>
+  <meta name="description" content="大学四年模拟器 - 体验真实大学四年的成长、抉择与人生轨迹">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- 顶部状态栏 -->
-  <header class="top-header">
-    <div class="header-brand">
-      <div class="brand-icon-wrap">🎓</div>
-      <div>
-        <h1 class="brand-title">大学四年模拟器</h1>
+  <!-- 顶部极简状态栏 (Top Status Bar) -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <div class="brand">
+        <span class="brand-icon">🎓</span>
+        <span class="brand-title">大学四年模拟器</span>
       </div>
-      <span class="brand-badge">v2.1 深度定性版</span>
     </div>
-    <div class="header-status">
-      <div class="status-chip chip-time" id="header-year">
-        <span>📅</span>
-        <span id="header-year-text">大一上 9月 (1/42)</span>
+    <div class="top-bar-center">
+      <div class="stage-badge" id="top-stage-badge">
+        <span class="stage-dot"></span>
+        <span id="top-stage-text">大一上 · 9月</span>
       </div>
-      <div class="status-chip chip-tu" id="header-tu">
-        <span class="chip-dot green"></span>
-        <span id="header-tu-text">时间: 【安排宽裕】</span>
+    </div>
+    <div class="top-bar-right">
+      <div class="resource-group">
+        <div class="res-item res-tu" id="res-tu-chip" title="本月剩余自由时间 (Time Units)">
+          <span class="res-icon">⏳</span>
+          <span class="res-val" id="top-tu-val">8 TU</span>
+        </div>
+        <div class="res-item res-ep" id="res-ep-chip" title="当前精力 (Energy Points)">
+          <span class="res-icon">⚡</span>
+          <span class="res-val" id="top-ep-val">90 EP</span>
+        </div>
       </div>
-      <div class="status-chip chip-ep" id="header-ep">
-        <span class="chip-dot blue"></span>
-        <span id="header-ep-text">精力: 【状态充沛】</span>
-      </div>
-      <div class="status-chip chip-ailab" id="header-stage" style="display: none;">
-        <span class="chip-dot purple"></span>
-        <span id="header-stage-text"></span>
-      </div>
-      <button class="btn-next-month" id="btn-next-month" title="结算本月并推进到下一个月份">
-        <span>推进到下个月</span>
-        <span>⏭️</span>
+      <button class="btn-icon-menu" id="btn-open-menu" title="游戏设置与更多操作" aria-label="更多菜单">
+        <span>⋯</span>
       </button>
     </div>
   </header>
 
-  <!-- 主界面栅格布局 -->
-  <main class="main-layout">
-    <!-- 左侧游戏核心区 -->
-    <section class="game-panel">
-      <!-- 当前选中的事件详情与分支决策卡 (Hero Active Event) -->
-      <div id="active-event-section">
-        <!-- 动态渲染选中事件与选项 -->
-      </div>
+  <!-- 主容器 (4大一级页面由底栏切换) -->
+  <main class="app-main">
+    <!-- ================= 页面 1: 人生 (Life 主页面) ================= -->
+    <section class="tab-panel active" id="panel-life">
+      <div class="life-layout">
+        <!-- 左侧核心决策流：当前事件 / 月度结算 -->
+        <div class="life-main-col">
+          <!-- 阶段 A: 当前事件决策卡 (Event Choice Phase) -->
+          <div class="event-stage-view" id="event-stage-view">
+            <!-- 多个事件时的轻量切换胶囊 -->
+            <div class="event-switch-bar" id="event-switch-bar" style="display: none;">
+              <span class="switch-label">📋 本月机遇：</span>
+              <div class="switch-chips" id="event-switch-chips"></div>
+            </div>
 
-      <!-- 可选行动事件池 (Available Events Pool) -->
-      <div>
-        <div class="section-header">
-          <div class="section-title">
-            <span>📋 本月行动事件池 (Action Pool)</span>
+            <!-- 当前主事件卡 -->
+            <div class="current-event-card" id="current-event-card">
+              <div class="event-meta-row">
+                <span class="event-tag" id="cur-event-pkg-tag">学业课程</span>
+                <span class="event-month-tag" id="cur-event-month-tag">第 1 个月</span>
+              </div>
+              <h2 class="event-headline" id="cur-event-title">新起点：大学第一堂专业导论课</h2>
+              <div class="event-narrative-box" id="cur-event-scene">
+                <!-- 动态填充剧情叙事 -->
+              </div>
+              <div class="action-prompt-row">
+                <span class="prompt-icon">👉</span>
+                <span class="prompt-text">面对当下的大学情境，你打算如何分配精力并采取行动？</span>
+              </div>
+            </div>
+
+            <!-- 可选行动卡片列表 -->
+            <div class="action-cards-grid" id="action-cards-grid">
+              <!-- 动态填充 3~4 个 Action Card -->
+            </div>
           </div>
-          <div class="section-sub" id="available-count">本月可用行动: 0 个</div>
+
+          <!-- 阶段 B: 月度结果结算卡 (Month Result Phase) -->
+          <div class="month-result-view" id="month-result-view" style="display: none;">
+            <div class="result-card">
+              <div class="result-header">
+                <div class="result-badge">🌟 本月历程结算</div>
+                <h2 class="result-title" id="result-title">九月行动圆满结束</h2>
+                <div class="result-subtitle" id="result-subtitle">大学生活的脚步正在稳步向前</div>
+              </div>
+
+              <!-- 叙事反馈 -->
+              <div class="result-story-box">
+                <div class="story-label">📖 经历反馈：</div>
+                <div class="story-text" id="result-story-text">
+                  <!-- 动态填入 choice.result_text -->
+                </div>
+              </div>
+
+              <!-- 本月定性变化与收获 -->
+              <div class="result-changes-box">
+                <div class="changes-label">📈 本月成长与影响：</div>
+                <div class="changes-tags-list" id="result-changes-list">
+                  <!-- 动态填入翻译为人类语言的成长与损耗 -->
+                </div>
+              </div>
+
+              <!-- 推进下月主按钮 -->
+              <div class="result-footer">
+                <button class="btn-primary-advance" id="btn-result-next-month">
+                  <span id="btn-next-month-text">进入下个月 (10月)</span>
+                  <span class="btn-arrow">&rarr;</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="event-pool-grid" id="event-pool-grid">
-          <!-- 动态渲染可选事件卡片 -->
+
+        <!-- 右侧极简速览栏 (Quick Status Sidebar) -->
+        <aside class="life-sidebar-col">
+          <!-- 极简生活状态 -->
+          <div class="quick-card">
+            <div class="quick-card-head">
+              <span class="head-title">❤️ 我的状态</span>
+              <span class="head-sub">综合评级</span>
+            </div>
+            <div class="quick-status-list" id="quick-status-list">
+              <!-- 动态填入 5 个核心生活状态 (学业, 健康, 心态, 社交, 家庭) -->
+            </div>
+          </div>
+
+          <!-- 最近成长简讯 -->
+          <div class="quick-card">
+            <div class="quick-card-head">
+              <span class="head-title">🌱 最近成长</span>
+              <span class="head-sub">最新变化</span>
+            </div>
+            <div class="recent-growth-list" id="recent-growth-list">
+              <!-- 动态填入最新 2~3 项正向能力沉淀 -->
+            </div>
+          </div>
+
+          <!-- 前往完整档案快捷入口 -->
+          <button class="btn-link-growth" id="link-to-growth-btn">
+            <span>查看完整档案与能力雷达</span>
+            <span class="link-arrow">&rarr;</span>
+          </button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= 页面 2: 成长 (Growth 完整状态与能力) ================= -->
+    <section class="tab-panel" id="panel-growth">
+      <div class="panel-inner-container">
+        <div class="panel-header">
+          <h2 class="panel-title">📊 个人成长档案</h2>
+          <p class="panel-desc">记录你在大学四年中的生活状态平衡与七大核心能力资产沉淀</p>
+        </div>
+
+        <!-- 第一层：五大基础生活状态 -->
+        <div class="growth-section-card">
+          <div class="card-section-title">
+            <span>❤️ 基础生活状态 (Life States)</span>
+          </div>
+          <div class="states-grid" id="growth-basic-states-grid">
+            <!-- 动态渲染学业、健康、心态、社交、家庭 -->
+          </div>
+        </div>
+
+        <!-- 第二层：七大能力沉淀资产与雷达图 -->
+        <div class="growth-section-card">
+          <div class="card-section-title">
+            <span>⚡ 七大核心能力资产 (Core Assets)</span>
+          </div>
+          <div class="growth-radar-wrapper" id="growth-radar-wrapper">
+            <!-- 动态渲染七边形 SVG 能力雷达图 -->
+          </div>
+          <div class="capabilities-grid" id="growth-cap-grid">
+            <!-- 动态渲染作品集, 科研, 硬技能, 交付力, 口碑, 专注, AI深度 -->
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 右侧状态监控面板 -->
-    <aside class="debug-panel">
-      <!-- 进阶发展路线卡 -->
-      <div class="debug-card">
-        <div class="debug-card-title">
-          <span>🚩 进阶发展路线 (Career Paths)</span>
+    <!-- ================= 页面 3: 路线 (Routes 发展规划与路径) ================= -->
+    <section class="tab-panel" id="panel-routes">
+      <div class="panel-inner-container">
+        <div class="panel-header">
+          <h2 class="panel-title">🚩 毕业发展路径规划</h2>
+          <p class="panel-desc">探索并推进校招就业、名校推免、考研统考与极客创业等多元方向</p>
         </div>
-        <div id="debug-routes-grid">
-          <!-- 动态渲染三大常规主路线与隐藏极客机遇 -->
-        </div>
-      </div>
 
-      <!-- 五大基础生活状态 -->
-      <div class="debug-card">
-        <div class="debug-card-title">
-          <span>❤️ 五大基础生活状态 (情境化定性)</span>
-        </div>
-        <div class="variable-grid" id="debug-basic-states-grid">
-          <!-- 动态展示 Academic, Social, Romance, Family, Health -->
+        <!-- 路线卡片容器 (渐进式展开) -->
+        <div class="routes-container" id="routes-cards-container">
+          <!-- 动态渲染 4 大发展路线与展开详情 -->
         </div>
       </div>
+    </section>
 
-      <!-- 七大能力沉淀资产 -->
-      <div class="debug-card">
-        <div class="debug-card-title">
-          <span>📊 七大能力沉淀资产 (能力维度)</span>
+    <!-- ================= 页面 4: 履历 (History 人生经历与成果) ================= -->
+    <section class="tab-panel" id="panel-history">
+      <div class="panel-inner-container">
+        <div class="panel-header">
+          <h2 class="panel-title">📜 大学人生履历与里程碑</h2>
+          <p class="panel-desc">沉淀四年里的每一次关键抉择、里程碑成就、项目科研与毕业成果</p>
         </div>
-        <div class="variable-grid" id="debug-cap-grid">
-          <!-- 动态展示 Portfolio, Research, Skill, Delivery, Reputation, Focus, AI_Depth -->
-        </div>
-      </div>
 
-      <!-- 关键经历标记 -->
-      <div class="debug-card">
-        <div class="debug-card-title">
-          <span>🏷️ 经历标记 (Flags)</span>
+        <!-- 履历子导航 -->
+        <div class="history-subtabs">
+          <button class="subtab-btn active" data-subtab="timeline">⏱️ 人生大事记</button>
+          <button class="subtab-btn" data-subtab="milestones">🏆 关键里程碑</button>
+          <button class="subtab-btn" data-subtab="projects">💻 STAR 项目库</button>
+          <button class="subtab-btn" data-subtab="resume-view">🎓 毕业成果与简历</button>
         </div>
-        <div class="tags-wrap" id="debug-tags-wrap">
-          <!-- 动态展示 Flags -->
-        </div>
-      </div>
 
-      <!-- 快速预设演练按钮 -->
-      <div class="debug-card">
-        <div class="debug-card-title">
-          <span>⚡ 核心路线快速演练 (Playtest Presets)</span>
+        <!-- 子页面 1: 人生大事记时间轴 -->
+        <div class="history-subpanel active" id="subpanel-timeline">
+          <div class="timeline-container" id="history-timeline-list">
+            <!-- 动态渲染按学期分组的时间轴 -->
+          </div>
         </div>
-        <div class="preset-btn-group">
-          <button class="btn-preset" id="btn-route-a">
-            <span>Route A: 极客工程实战 + 顶级大厂 SSP (E04)</span>
-            <span>&rarr;</span>
-          </button>
-          <button class="btn-preset" id="btn-route-b">
-            <span>Route B: 顶尖名校学术保研推免 (E01)</span>
-            <span>&rarr;</span>
-          </button>
-          <button class="btn-preset" id="btn-route-c">
-            <span>Route C: 统考高分金榜题名 (E03)</span>
-            <span>&rarr;</span>
-          </button>
-          <button class="btn-preset" id="btn-route-d">
-            <span>Route D: 稳健发展·优质名企骨干 (E06)</span>
-            <span>&rarr;</span>
-          </button>
-          <button class="btn-preset" id="btn-route-e">
-            <span>Route E: 极客创业·真实战场核心力量 (E05)</span>
-            <span>&rarr;</span>
-          </button>
-          <button class="btn-reset" id="btn-reset-game">🔄 重置游戏至大一 9 月初始状态</button>
-        </div>
-      </div>
-    </aside>
 
-    <!-- 底部全流程行动历史记录 (History Log) -->
-    <section class="history-section">
-      <div class="section-header">
-        <div class="section-title">
-          <span>📜 行动历史与状态迁移日志 (History Log)</span>
+        <!-- 子页面 2: 关键里程碑 -->
+        <div class="history-subpanel" id="subpanel-milestones" style="display: none;">
+          <div class="milestones-grid" id="history-milestones-grid">
+            <!-- 动态渲染人生经历/里程碑成就徽章 -->
+          </div>
         </div>
-        <div class="section-sub">记录每一步决策对生活状态、能力资产、资源与经历池的定性影响</div>
-      </div>
-      <div class="history-list" id="history-list">
-        <!-- 动态渲染历史行动记录 -->
+
+        <!-- 子页面 3: STAR 项目经历库 -->
+        <div class="history-subpanel" id="subpanel-projects" style="display: none;">
+          <div class="projects-list" id="history-projects-list">
+            <!-- 动态渲染积累的 STAR 项目与科研经历 -->
+          </div>
+        </div>
+
+        <!-- 子页面 4: 毕业成果预览 / 正式简历 -->
+        <div class="history-subpanel" id="subpanel-resume-view" style="display: none;">
+          <div class="resume-preview-container" id="history-resume-preview">
+            <!-- 动态渲染：未毕业显示成型中提示，毕业后展示双视图 -->
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- 毕业简历收口全屏弹窗 (Resume Modal) -->
-  <div class="resume-modal-overlay" id="resume-modal-overlay" style="display: none;">
-    <div class="resume-modal-card">
+  <!-- 底部固定一级导航栏 (Bottom Navigation) -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="life" id="nav-btn-life">
+      <span class="nav-icon">🌿</span>
+      <span class="nav-text">人生</span>
+    </button>
+    <button class="nav-item" data-tab="growth" id="nav-btn-growth">
+      <span class="nav-icon">📊</span>
+      <span class="nav-text">成长</span>
+    </button>
+    <button class="nav-item" data-tab="routes" id="nav-btn-routes">
+      <span class="nav-icon">🚩</span>
+      <span class="nav-text">路线</span>
+    </button>
+    <button class="nav-item" data-tab="history" id="nav-btn-history">
+      <span class="nav-icon">📜</span>
+      <span class="nav-text">履历</span>
+    </button>
+  </nav>
+
+  <!-- ================= 弹窗系统 ================= -->
+
+  <!-- 1. 游戏主菜单弹窗 (Settings / Menu Modal) -->
+  <div class="modal-overlay" id="menu-modal" style="display: none;">
+    <div class="modal-card menu-modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ 游戏菜单与设置</h3>
+        <button class="btn-close" id="btn-close-menu">&times;</button>
+      </div>
+      <div class="menu-list">
+        <button class="menu-item" id="menu-btn-save">
+          <div class="menu-item-icon">💾</div>
+          <div class="menu-item-info">
+            <div class="menu-item-title">保存游戏进度</div>
+            <div class="menu-item-desc">将当前大学人生存档保存在本地浏览器</div>
+          </div>
+        </button>
+        <button class="menu-item" id="menu-btn-load">
+          <div class="menu-item-icon">📂</div>
+          <div class="menu-item-info">
+            <div class="menu-item-title">读取已有存档</div>
+            <div class="menu-item-desc">恢复最近一次保存的游戏进度</div>
+          </div>
+        </button>
+        <button class="menu-item" id="menu-btn-restart">
+          <div class="menu-item-icon">🔄</div>
+          <div class="menu-item-info">
+            <div class="menu-item-title">重新开始人生</div>
+            <div class="menu-item-desc">重置为大一 9 月新生初始状态</div>
+          </div>
+        </button>
+        <button class="menu-item" id="menu-btn-open-debug">
+          <div class="menu-item-icon">🛠️</div>
+          <div class="menu-item-info">
+            <div class="menu-item-title">开发者调试与演练工具</div>
+            <div class="menu-item-desc">快速预设演练、属性调整、月份跳转与结局测试</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 开发者调试与演练工具弹窗 (Debug Console Modal - 隐藏在菜单与URL中) -->
+  <div class="modal-overlay" id="debug-modal" style="display: none;">
+    <div class="modal-card debug-modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">🛠️ 开发者与测试演练控制台 (Debug Console)</h3>
+        <button class="btn-close" id="btn-close-debug">&times;</button>
+      </div>
+      <div class="debug-modal-body">
+        <div class="debug-block">
+          <div class="debug-block-title">⚡ 核心路线一键演练预设 (Playtest Presets)</div>
+          <div class="debug-presets-grid">
+            <button class="btn-debug-preset" id="dbg-route-a">Route A: 极客工程实战 + 顶级大厂 SSP (E04)</button>
+            <button class="btn-debug-preset" id="dbg-route-b">Route B: 顶尖名校学术保研推免 (E01)</button>
+            <button class="btn-debug-preset" id="dbg-route-c">Route C: 统考高分金榜题名 (E03)</button>
+            <button class="btn-debug-preset" id="dbg-route-d">Route D: 稳健发展·优质名企骨干 (E06)</button>
+            <button class="btn-debug-preset" id="dbg-route-e">Route E: 极客创业·具身智能核心力量 (E05)</button>
+          </div>
+        </div>
+
+        <div class="debug-block">
+          <div class="debug-block-title">⏱️ 月份快速跳转</div>
+          <div class="debug-jump-row">
+            <select class="debug-select" id="dbg-month-select"></select>
+            <button class="btn-debug-action" id="dbg-btn-jump-month">跳转至指定月份</button>
+          </div>
+        </div>
+
+        <div class="debug-block">
+          <div class="debug-block-title">🏆 结局直接测试</div>
+          <div class="debug-ending-btns" id="dbg-ending-btns">
+            <!-- 动态生成 E01~E15 快捷测试按钮 -->
+          </div>
+        </div>
+
+        <div class="debug-block">
+          <div class="debug-block-title">🔍 原始状态查看 (Raw State Inspector)</div>
+          <pre class="debug-json-view" id="dbg-raw-state"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 毕业大结局与简历全屏弹窗 (Graduation & Resume Modal) -->
+  <div class="modal-overlay" id="resume-modal-overlay" style="display: none;">
+    <div class="modal-card resume-modal-card">
       <div class="resume-modal-top">
         <div class="resume-nav-tabs">
           <button class="resume-tab-btn active" id="tab-btn-certificate">🎓 毕业去向荣誉证书</button>
@@ -162,7 +355,8 @@
         <button class="btn-close-modal" id="btn-close-resume">&times;</button>
       </div>
       <div class="resume-modal-body" id="resume-modal-body">
-        <!-- 动态渲染最终毕业简历与结局 -->
+        <!-- 动态渲染最终毕业简历与结局证书 -->
+      </div>
     </div>
   </div>
 
