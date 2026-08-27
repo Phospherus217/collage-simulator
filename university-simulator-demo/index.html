@@ -10,32 +10,34 @@
 <body>
   <!-- 顶部极简状态栏 (Top Status Bar) -->
   <header class="top-bar">
-    <div class="top-bar-left">
-      <div class="brand">
-        <span class="brand-icon">🎓</span>
-        <span class="brand-title">大学四年模拟器</span>
-      </div>
-    </div>
-    <div class="top-bar-center">
-      <div class="stage-badge" id="top-stage-badge">
-        <span class="stage-dot"></span>
-        <span id="top-stage-text">大一上 · 9月</span>
-      </div>
-    </div>
-    <div class="top-bar-right">
-      <div class="resource-group">
-        <div class="res-item res-tu" id="res-tu-chip" title="本月剩余自由时间 (Time Units)">
-          <span class="res-icon">⏳</span>
-          <span class="res-val" id="top-tu-val">8 TU</span>
-        </div>
-        <div class="res-item res-ep" id="res-ep-chip" title="当前精力 (Energy Points)">
-          <span class="res-icon">⚡</span>
-          <span class="res-val" id="top-ep-val">90 EP</span>
+    <div class="top-bar-inner">
+      <div class="top-bar-left">
+        <div class="brand">
+          <span class="brand-icon">🎓</span>
+          <span class="brand-title">大学四年模拟器</span>
         </div>
       </div>
-      <button class="btn-icon-menu" id="btn-open-menu" title="游戏设置与更多操作" aria-label="更多菜单">
-        <span>⋯</span>
-      </button>
+      <div class="top-bar-center">
+        <div class="stage-badge" id="top-stage-badge">
+          <span class="stage-dot"></span>
+          <span id="top-stage-text">大一上 · 9月</span>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="resource-group">
+          <div class="res-item res-tu" id="res-tu-chip" title="本月剩余自由时间 (Time Units)">
+            <span class="res-icon">⏳</span>
+            <span class="res-val" id="top-tu-val">8 TU</span>
+          </div>
+          <div class="res-item res-ep" id="res-ep-chip" title="当前精力 (Energy Points)">
+            <span class="res-icon">⚡</span>
+            <span class="res-val" id="top-ep-val">90 EP</span>
+          </div>
+        </div>
+        <button class="btn-icon-menu" id="btn-open-menu" title="游戏设置与更多操作" aria-label="更多菜单">
+          <span>⋯</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -242,22 +244,24 @@
 
   <!-- 底部固定一级导航栏 (Bottom Navigation) -->
   <nav class="bottom-nav">
-    <button class="nav-item active" data-tab="life" id="nav-btn-life">
-      <span class="nav-icon">🌿</span>
-      <span class="nav-text">人生</span>
-    </button>
-    <button class="nav-item" data-tab="growth" id="nav-btn-growth">
-      <span class="nav-icon">📊</span>
-      <span class="nav-text">成长</span>
-    </button>
-    <button class="nav-item" data-tab="routes" id="nav-btn-routes">
-      <span class="nav-icon">🚩</span>
-      <span class="nav-text">路线</span>
-    </button>
-    <button class="nav-item" data-tab="history" id="nav-btn-history">
-      <span class="nav-icon">📜</span>
-      <span class="nav-text">履历</span>
-    </button>
+    <div class="bottom-nav-inner">
+      <button class="nav-item active" data-tab="life" id="nav-btn-life">
+        <span class="nav-icon">🌿</span>
+        <span class="nav-text">人生</span>
+      </button>
+      <button class="nav-item" data-tab="growth" id="nav-btn-growth">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">成长</span>
+      </button>
+      <button class="nav-item" data-tab="routes" id="nav-btn-routes">
+        <span class="nav-icon">🚩</span>
+        <span class="nav-text">路线</span>
+      </button>
+      <button class="nav-item" data-tab="history" id="nav-btn-history">
+        <span class="nav-icon">📜</span>
+        <span class="nav-text">履历</span>
+      </button>
+    </div>
   </nav>
 
   <!-- ================= 弹窗系统 ================= -->
