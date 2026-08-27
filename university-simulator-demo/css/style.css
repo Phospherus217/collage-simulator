@@ -625,6 +625,111 @@ img, svg {
   font-weight: 700;
 }
 
+/* 系统级通用行动卡：休息调整 */
+.system-rest-section {
+  margin-top: 14px;
+  width: 100%;
+  min-width: 0;
+}
+
+.rest-action-card {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-xs);
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+}
+
+.rest-action-card:hover:not(.disabled) {
+  border-color: #22c55e;
+  background: #dcfce7;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.rest-action-card:active:not(.disabled) {
+  transform: scale(0.985);
+}
+
+.rest-action-card.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: var(--bg-card-subtle);
+  border-color: var(--border-subtle);
+}
+
+.rest-action-card.recovery-highlight {
+  border-color: #f59e0b;
+  background: #fffbeb;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+}
+
+.rest-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rest-card-title {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rest-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.rest-badge-normal {
+  background: var(--success-light);
+  color: #065f46;
+  border: 1px solid var(--success-border);
+}
+
+.rest-badge-urgent {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.rest-desc-text {
+  font-size: 0.84rem;
+  color: var(--text-body);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.rest-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.rest-cta-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
 /* 行动结果反馈卡 (Action Result Feedback Phase) */
 .month-result-view {
   animation: fadeIn 0.25s ease-out;

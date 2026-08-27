@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= 4. 一级页面: 人生 (Life View) =================
   function renderLifePage(s) {
     const availableEvents = engine.getAvailableEvents();
+    const isRecoveryLocked = s.resources.recovery_lock === true;
 
     if (currentPhase === 'choice') {
       elEventStageView.style.display = 'block';
@@ -248,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const costEP = (c.cost && c.cost.EP) || 0;
           const hasEnoughTU = s.resources.TU_current >= costTU;
           const isOverdraftRisk = s.resources.EP_current < costEP;
+          const isActionDisabled = !hasEnoughTU || isRecoveryLocked;
 
           const hint = c.player_hint || {};
           const loadLvl = hint.load_level !== undefined ? hint.load_level : 1;
@@ -255,8 +257,15 @@ document.addEventListener('DOMContentLoaded', () => {
           const intent = hint.intent || '';
           const tradeoff = hint.tradeoff || '';
 
+          let disabledHintText = '';
+          if (isRecoveryLocked) {
+            disabledHintText = '⚠️ 身体处于透支恢复锁，需要先休整调整状态';
+          } else if (!hasEnoughTU) {
+            disabledHintText = '⚠️ 本月剩余时间不足，无法执行该安排';
+          }
+
           return `
-            <div class="action-card ${!hasEnoughTU ? 'disabled' : ''}" data-choice-id="${c.choice_id}">
+            <div class="action-card ${isActionDisabled ? 'disabled' : ''}" data-choice-id="${c.choice_id}">
               <div class="action-card-top">
                 <div class="action-card-title">
                   <span class="action-key-pill">${c.choice_id}</span>
@@ -272,8 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
               ` : ''}
               <div class="action-footer-row">
                 <div class="action-cost-tags">
-                  ${!hasEnoughTU ? `<span class="action-disabled-hint">⚠️ 本月剩余时间不足，无法执行该安排</span>` : ''}
-                  ${(hasEnoughTU && isOverdraftRisk) ? `<span class="action-overdraft-warn">⚠️ 精力透支预警 (当前状态无法轻松承担，将预支扣减下月精力)</span>` : ''}
+                  ${disabledHintText ? `<span class="action-disabled-hint">${disabledHintText}</span>` : ''}
+                  ${(!isRecoveryLocked && hasEnoughTU && isOverdraftRisk) ? `<span class="action-overdraft-warn">⚠️ 精力透支预警 (当前状态无法轻松承担，将预支扣减下月精力)</span>` : ''}
                 </div>
               </div>
             </div>
@@ -288,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = engine.applyChoice(curEvent.event_id, choiceId);
             if (res.success) {
               lastChoiceResult = {
+                type: 'ACTION',
                 choice: res.choice,
                 event: res.event,
                 historyItem: res.historyItem,
@@ -317,6 +327,57 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
       }
+
+      // 渲染系统级通用行动：🌿 休息调整卡片
+      const elSystemRestSection = document.getElementById('system-rest-section');
+      if (elSystemRestSection) {
+        const canRest = s.resources.TU_current >= 1;
+        let restDesc = '暂时放下繁重计划，给自己留一点空白时间，让身心恢复从容余裕。';
+        if (isRecoveryLocked) {
+          restDesc = '身体已经发出明显警告，目前处于透支恢复状态，现在最需要的是停下来休整恢复。';
+        } else if (s.resources.EP_current < 45) {
+          restDesc = '最近身心显露疲态，适当休息能够有效缓解负荷，为后续攻坚储备精力。';
+        }
+
+        elSystemRestSection.innerHTML = `
+          <div class="rest-action-card ${!canRest ? 'disabled' : ''} ${isRecoveryLocked ? 'recovery-highlight' : ''}" id="btn-action-rest">
+            <div class="rest-card-head">
+              <div class="rest-card-title">
+                <span class="rest-card-icon">🌿</span>
+                <span><strong>休息调整</strong> · 休整调理身心</span>
+              </div>
+              <span class="rest-badge ${isRecoveryLocked ? 'rest-badge-urgent' : 'rest-badge-normal'}">
+                ${isRecoveryLocked ? '⚠️ 亟需休整' : '身心调理'}
+              </span>
+            </div>
+            <div class="rest-card-body">
+              <p class="rest-desc-text">${restDesc}</p>
+            </div>
+            <div class="rest-card-footer">
+              ${canRest 
+                ? `<span class="rest-cta-text">👉 ${isRecoveryLocked ? '立即安排休息调理' : '安排休整调理'}</span>`
+                : `<span class="action-disabled-hint">⚠️ 本月可用时间已耗尽，无法继续休整</span>`}
+            </div>
+          </div>
+        `;
+
+        const btnRest = document.getElementById('btn-action-rest');
+        if (btnRest && canRest) {
+          btnRest.addEventListener('click', () => {
+            const res = engine.applyRest();
+            if (res.success) {
+              lastChoiceResult = {
+                type: 'REST',
+                choice: { text: '休整调理身心' },
+                historyItem: res.historyItem,
+                timelineName: engine.getCurrentTimeline().name
+              };
+              currentPhase = 'result';
+              renderAll();
+            }
+          });
+        }
+      }
     } else {
       // 阶段 B: 本次行动反馈卡 (Action Result Phase)
       elEventStageView.style.display = 'none';
@@ -324,9 +385,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (lastChoiceResult) {
         const item = lastChoiceResult.historyItem;
-        elResultTitle.textContent = '本次行动反馈';
-        elResultSubtitle.textContent = `行动决策：${item.choiceText}`;
-        elResultStoryText.textContent = item.resultText || '你顺利完成了当下的安排，大学履历沉淀更进一步。';
+        if (lastChoiceResult.type === 'REST') {
+          elResultTitle.textContent = '本次休整反馈';
+          elResultSubtitle.textContent = '安排决策：暂时休整调理身心';
+          elResultStoryText.textContent = item.resultText || '你给自己留出了一段休整时间，没有继续给日程加码，身心精力得到了恢复。';
+        } else {
+          elResultTitle.textContent = '本次行动反馈';
+          elResultSubtitle.textContent = `行动决策：${item.choiceText}`;
+          elResultStoryText.textContent = item.resultText || '你顺利完成了当下的安排，大学履历沉淀更进一步。';
+        }
 
         // 整理定性变化 (纯定性自然语言，杜绝底层数值泄露)
         const deltaQualitativeMap = {
@@ -375,15 +442,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         elResultChangesList.innerHTML = changesHtml;
 
-        // 计算本月是否还可以继续安排事件 (月内循环多事件判断)
+        // 计算本月是否还可以继续安排事件或休息 (月内循环多事件与休整判断)
         const remainingEvents = engine.getAvailableEvents();
-        const canContinueThisMonth =
-          s.resources.EP_current > 0
+        const REST_TU_COST = 1;
+        const canRest = s.resources.TU_current >= REST_TU_COST;
+        const hasExecutableNormalAction =
+          !s.resources.recovery_lock
           && remainingEvents.some(event =>
             event.choices.some(choice =>
               s.resources.TU_current >= ((choice.cost && choice.cost.TU) || 0)
             )
           );
+        const canContinueThisMonth = canRest || hasExecutableNormalAction;
 
         const nextMonthTotal = s.total_month + 1;
         const nextTl = window.MONTH_TIMELINE.find(t => t.total === nextMonthTotal);
@@ -392,10 +462,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const elResultFooter = document.getElementById('result-footer-actions') || document.querySelector('.result-footer');
         if (elResultFooter) {
           if (canContinueThisMonth) {
+            const continueBtnText = s.resources.recovery_lock ? '👉 先休息调整' : '👉 继续安排本月';
             elResultFooter.innerHTML = `
               <div class="result-actions-row">
                 <button class="btn-primary-advance" id="btn-result-continue-month">
-                  <span>👉 继续安排本月</span>
+                  <span>${continueBtnText}</span>
                 </button>
                 <button class="btn-secondary-advance" id="btn-result-next-month">
                   <span>结束本月，进入下个月 (${nextName}) &rarr;</span>

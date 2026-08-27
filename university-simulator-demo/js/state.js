@@ -5,7 +5,7 @@
  * - 纯定性展示与情境化状态映射 (去算分器化)
  * - 五大基础生活状态 (academic, social, romance, family, health)
  * - 七大能力沉淀资产 (portfolio, research, skill, delivery, reputation, focus, ai_depth)
- * - 严苛双资源模型 (课业底噪 2 TU 锁定, EP_max = 50 + 0.5 * health)
+ * - 严苛双资源模型 (课业底噪 2 TU 锁定, EP_max 固定为 90, EP_current 是月内实时精力, overdraft_EP 预支下月恢复量, 休息通过消耗 TU 恢复 EP_current)
  * - 四大路线状态机 (work, postgrad_exam, postgrad_rec, ailab)
  * - 简历经历池 (resume_pool) 与经历链合并机制
  */
@@ -134,7 +134,8 @@ function createInitialState() {
       TU_locked: 2,        // 常规学期课业底噪占用 2 TU
       EP_current: initialEPMax, // 当前精力 90 EP
       EP_max: initialEPMax,     // 精力上限 90 EP
-      overdraft_EP: 0      // 上月透支精力
+      overdraft_EP: 0,     // 上月透支精力
+      recovery_lock: false // 恢复状态锁 (EP < 45 时需要通过休息恢复)
     },
     routes: JSON.parse(JSON.stringify(INITIAL_ROUTES)),
     history: {

@@ -2,7 +2,7 @@
  * 大学四年模拟器 v2.1 - 核心逻辑引擎 (engine.js)
  * 严格执行：
  * - 46 个月月度推进与 14 步循环
- * - 严苛化双资源模型 (课业底噪 2 TU 锁定, EP_max = 50 + 0.5 * health)
+ * - 严苛化双资源模型 (课业底噪 2 TU 锁定, EP_max 固定为 90, EP_current 是月内实时精力, overdraft_EP 预支下月恢复量, 休息通过消耗 TU 恢复 EP_current)
  * - 纯定性展示与情境化状态迁移
  * - 毕业大结局 E01~E15 显性量化与中国式家长风格证书
  * - 标准大赛级毕业简历收口系统 (STAR 结构经历链合并)
@@ -59,45 +59,42 @@ class IFEngine {
     r.EP_current = Math.max(0, r.EP_max - previousDebt);
     r.overdraft_EP = 0; // 旧债务在月初完成一次性结算并清零！
 
+    // 4. 根据本月恢复后的 EP_current 决定恢复状态锁 (recovery_lock)
+    const RECOVERY_UNLOCK_EP = 45;
+    r.recovery_lock = r.EP_current < RECOVERY_UNLOCK_EP;
+
     if (previousDebt > 0) {
       s.history.history_log.unshift({
         type: 'SYSTEM',
         month: s.total_month,
         title: '【月初结算】精力透支扣减',
-        desc: `偿还上月透支预支的 ${previousDebt} 点精力，本月初始可用精力为 ${r.EP_current}/${r.EP_max} EP。本月如在正常精力范围内使用，下月将完全恢复满格。`
+        desc: `偿还上月透支预支的 ${previousDebt} 点精力，本月初始可用精力为 ${r.EP_current}/${r.EP_max} EP。`
       });
     }
 
-    // 4. 扣除进行中主路线的刚性驻留成本 (TU 与 EP)
+    // 5. 扣除进行中主路线的刚性时间驻留成本 (TU，路线占用时间承诺，不再自动扣除精力 EP)
     let residenceTUCost = 0;
-    let residenceEPCost = 0;
 
     if (s.routes.work.status === 'PRIMARY') {
       residenceTUCost += 5;
-      residenceEPCost += 55;
     }
     if (s.routes.postgrad_exam.status === 'PRIMARY') {
       residenceTUCost += 5;
-      residenceEPCost += 50;
       // 考研备考值自然累积
       const focusBonus = 1 + (s.capabilities.focus - 50) / 100;
       s.routes.postgrad_exam.exam_prep = Math.min(100, s.routes.postgrad_exam.exam_prep + Math.round(8 * focusBonus));
     }
     if (s.routes.postgrad_rec.status === 'PRIMARY') {
       residenceTUCost += 4;
-      residenceEPCost += 40;
     }
     if (s.routes.ailab.phase === 'ACTIVE') {
       residenceTUCost += 3;
-      residenceEPCost += 35;
     } else if (s.routes.ailab.phase === 'CORE') {
       residenceTUCost += 6;
-      residenceEPCost += 70;
     }
 
-    // 执行驻留扣除
+    // 执行时间驻留扣除
     r.TU_current = Math.max(0, r.TU_current - residenceTUCost);
-    r.EP_current = Math.max(0, r.EP_current - residenceEPCost);
 
     // 5. 健康行动封锁检查
     if (b.health <= 20) {
@@ -244,7 +241,7 @@ class IFEngine {
     const cap = s.capabilities;
     const r = s.resources;
 
-    // 1. 扣除行动资源 TU 与 EP (若超出当前 EP 则计入透支)
+    // 1. 扣除行动资源 TU 与 EP (若超出当前 EP 则计入透支并进入恢复锁)
     const costTU = (choice.cost && choice.cost.TU) || 0;
     const costEP = (choice.cost && choice.cost.EP) || 0;
 
@@ -255,6 +252,7 @@ class IFEngine {
       const overdraft = costEP - r.EP_current;
       r.EP_current = 0;
       r.overdraft_EP += overdraft;
+      r.recovery_lock = true; // 发生真正透支后，立即进入恢复锁！
     }
 
     // 2. 状态变动结算
@@ -348,6 +346,61 @@ class IFEngine {
       success: true,
       event,
       choice,
+      historyItem,
+      state: s,
+      availableEvents: this.getAvailableEvents()
+    };
+  }
+
+  /**
+   * 系统级行动：安排休息调整以恢复精力
+   */
+  applyRest() {
+    const s = this.state;
+    const r = s.resources;
+    const REST_TU_COST = 1;
+    const REST_EP_RECOVERY = 20;
+    const RECOVERY_UNLOCK_EP = 45;
+
+    if (r.TU_current < REST_TU_COST) {
+      return {
+        success: false,
+        error: '本月已没有足够时间休息'
+      };
+    }
+
+    const beforeEP = r.EP_current;
+    r.TU_current -= REST_TU_COST;
+    r.EP_current = Math.min(r.EP_max, r.EP_current + REST_EP_RECOVERY);
+    const recovered = r.EP_current - beforeEP;
+
+    const unlockedNow = (beforeEP < RECOVERY_UNLOCK_EP && r.EP_current >= RECOVERY_UNLOCK_EP);
+    if (r.EP_current >= RECOVERY_UNLOCK_EP) {
+      r.recovery_lock = false;
+    }
+
+    const historyItem = {
+      type: 'REST',
+      month: s.total_month,
+      timeName: this.getCurrentTimeline().name,
+      title: '休息调整',
+      choiceText: '暂时放下计划，休整调理身心',
+      resultText: recovered > 0
+        ? '你给自己留出了一段休整时间，没有继续给日程加码，身心精力得到了恢复。'
+        : '你目前精力本就处于充沛上限，休整让你保持了良好的从容心态。',
+      qualitative_changes: recovered > 0
+        ? (unlockedNow ? ['🌿 身心精力有所恢复', '✨ 恢复状态已稳定，可重新安排常规活动'] : ['🌿 身心精力有所恢复'])
+        : ['🌿 保持从容心态'],
+      recovered,
+      unlockedNow
+    };
+    s.history.history_log.unshift(historyItem);
+
+    return {
+      success: true,
+      type: 'REST',
+      recovered,
+      unlockedNow,
       historyItem,
       state: s,
       availableEvents: this.getAvailableEvents()
