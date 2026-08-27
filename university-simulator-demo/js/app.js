@@ -827,7 +827,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="outcome-cert-header">
             <div class="cert-stamp-badge">🏆 ${end.rank} 级毕业成就</div>
             <h2 class="cert-main-title">${end.title || end.name}</h2>
-            <div class="cert-subtitle">本科毕业发展收口认定证书 · 2029届</div>
+            <div class="cert-subtitle">本科毕业发展收口认定证书 · 2030届</div>
           </div>
           <div class="outcome-destination-banner">
             <div class="outcome-dest-label">🎯 最终毕业去向 / 录取录用单位</div>
@@ -895,7 +895,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="resume-block-heading">🎓 教育背景 / Education</div>
             <div class="resume-edu-row">
               <span>${resume.university} · 计算机科学与技术</span>
-              <span>工学学士 (2025.09 - 2029.06)</span>
+              <span>工学学士 (2026.09 - 2030.06)</span>
             </div>
             <div class="resume-edu-sub">
               <span>主修课程：数据结构、计算机体系结构、操作系统、分布式计算、AI Agent 智能体系统</span>

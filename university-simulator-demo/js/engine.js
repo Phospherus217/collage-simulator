@@ -652,7 +652,7 @@ class IFEngine {
       degree: '工学学士',
       major: '计算机科学与技术',
       university: '国家重点大学',
-      graduation_date: '2029年6月',
+      graduation_date: '2030年6月',
       academic_evaluation: b.academic >= 85 ? '专业前 5% (GPA 3.85 / 国奖有力竞争者)' : (b.academic >= 70 ? '专业前 15% (GPA 3.50 / 良好)' : '成绩中等 (GPA 3.00)'),
       entries: mergedEntries,
       capabilities: { ...cap },
