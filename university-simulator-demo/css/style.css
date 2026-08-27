@@ -772,6 +772,46 @@ img, svg {
   box-shadow: var(--shadow-md);
 }
 
+.result-actions-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.result-actions-row .btn-primary-advance {
+  flex: 1.2;
+  min-width: 180px;
+}
+
+.btn-secondary-advance {
+  flex: 1;
+  min-width: 160px;
+  background: var(--bg-card-subtle);
+  color: var(--text-body);
+  border: 1.5px solid var(--border-subtle);
+  padding: 14px 20px;
+  border-radius: var(--radius-card);
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary-advance:hover {
+  background: #ffffff;
+  border-color: var(--border-focus);
+  color: var(--text-main);
+}
+
+.btn-secondary-advance:active {
+  transform: scale(0.985);
+}
+
 /* ================= 右侧人物简要状态 (Quick Status Sidebar) ================= */
 .quick-card {
   background: var(--bg-card);

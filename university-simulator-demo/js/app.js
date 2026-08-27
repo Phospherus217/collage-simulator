@@ -189,15 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (elTopTuVal) {
       const timeQual = window.getTimeQualitative(s.resources.TU_current, 10);
-      elTopTuVal.textContent = `${s.resources.TU_current} TU`;
+      elTopTuVal.textContent = `【${timeQual.text}】`;
       const resTuChip = document.getElementById('res-tu-chip');
-      if (resTuChip) resTuChip.title = `自由时间: 【${timeQual.text}】 (本月课业底噪占用 ${s.resources.TU_locked} TU)`;
+      if (resTuChip) resTuChip.title = `自由时间: 【${timeQual.text}】 · ${timeQual.desc}`;
     }
     if (elTopEpVal) {
       const energyQual = window.getEnergyQualitative(s.resources.EP_current, s.resources.EP_max);
-      elTopEpVal.textContent = `${s.resources.EP_current} EP`;
+      elTopEpVal.textContent = `【${energyQual.text}】`;
       const resEpChip = document.getElementById('res-ep-chip');
-      if (resEpChip) resEpChip.title = `精力状态: 【${energyQual.text}】 (上限 ${s.resources.EP_max} EP)`;
+      if (resEpChip) resEpChip.title = `精力状态: 【${energyQual.text}】 · ${energyQual.desc}`;
     }
   }
 
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elCurEventTitle.textContent = curEvent.title;
         elCurEventScene.innerHTML = `<p>${curEvent.content.scene}</p>`;
 
-        // 渲染可选行动卡片
+        // 渲染可选行动卡片 (隐藏底层 TU/EP 算术数值，仅展示定性负荷、导向与权衡)
         elActionCardsGrid.innerHTML = curEvent.choices.map(c => {
           const costTU = (c.cost && c.cost.TU) || 0;
           const costEP = (c.cost && c.cost.EP) || 0;
@@ -271,17 +271,15 @@ document.addEventListener('DOMContentLoaded', () => {
               ` : ''}
               <div class="action-footer-row">
                 <div class="action-cost-tags">
-                  <span class="action-cost-item">⏳ 时间 -${costTU} TU</span>
-                  <span class="action-cost-item">⚡ 精力 -${costEP} EP</span>
+                  ${!hasEnoughTU ? `<span class="action-disabled-hint">⚠️ 本月剩余时间不足，无法执行该安排</span>` : ''}
+                  ${(hasEnoughTU && isOverdraftRisk) ? `<span class="action-overdraft-warn">⚠️ 精力透支预警 (当前状态无法轻松承担，将预支扣减下月精力)</span>` : ''}
                 </div>
-                ${!hasEnoughTU ? `<span class="action-disabled-hint">⚠️ 时间不足，无法执行</span>` : ''}
-                ${(hasEnoughTU && isOverdraftRisk) ? `<span class="action-overdraft-warn">⚠️ 精力透支预警 (预支扣减下月恢复量)</span>` : ''}
               </div>
             </div>
           `;
         }).join('');
 
-        // 绑定行动点击
+        // 绑定行动点击 (注意：applyChoice 成功后绝不调用 nextMonth()，仅记录结果并切入 result 行动反馈)
         elActionCardsGrid.querySelectorAll('.action-card').forEach(card => {
           card.addEventListener('click', () => {
             if (card.classList.contains('disabled')) return;
@@ -313,59 +311,128 @@ document.addEventListener('DOMContentLoaded', () => {
           btnEmpty.addEventListener('click', () => {
             engine.nextMonth();
             currentPhase = 'choice';
+            selectedEventId = null;
             renderAll();
           });
         }
       }
     } else {
-      // 阶段 B: 月度结果结算
+      // 阶段 B: 本次行动反馈卡 (Action Result Phase)
       elEventStageView.style.display = 'none';
       elMonthResultView.style.display = 'block';
 
       if (lastChoiceResult) {
         const item = lastChoiceResult.historyItem;
-        elResultTitle.textContent = `${lastChoiceResult.timelineName.split(' (')[0]} · 历程结算`;
+        elResultTitle.textContent = '本次行动反馈';
         elResultSubtitle.textContent = `行动决策：${item.choiceText}`;
-        elResultStoryText.textContent = item.resultText || '你顺利完成了本月既定安排，大学履历沉淀更进一步。';
+        elResultStoryText.textContent = item.resultText || '你顺利完成了当下的安排，大学履历沉淀更进一步。';
 
-        // 整理定性变化
+        // 整理定性变化 (纯定性自然语言，杜绝底层数值泄露)
+        const deltaQualitativeMap = {
+          academic: { pos: '学业掌握有所精进', neg: '学业状态有所回落' },
+          health:   { pos: '身心状态有所恢复', neg: '身心负担有所加重' },
+          social:   { pos: '社交人脉有所拓展', neg: '人际关系略显疏远' },
+          romance:  { pos: '情感生活有所升温', neg: '情感状态产生波动' },
+          family:   { pos: '家庭支持更加和睦', neg: '家庭关系略显吃紧' },
+          portfolio:{ pos: '代码作品进一步沉淀', neg: '作品进度受到延误' },
+          research: { pos: '科研学术有所突破', neg: '科研进展略显停滞' },
+          skill:    { pos: '工程硬技能得到锻炼', neg: '技能练习有所欠缺' },
+          delivery: { pos: '闭环交付力有所提升', neg: '项目交付面临挑战' },
+          reputation:{ pos: '行业口碑有所积累', neg: '行业声誉受到波及' },
+          focus:    { pos: '专注定力更加稳固', neg: '专注状态受到影响' },
+          ai_depth: { pos: '前沿 AI 深度有所拓展', neg: '技术探索有所受阻' }
+        };
+
         let changesHtml = '';
         if (item.qualitative_changes && item.qualitative_changes.length > 0) {
           changesHtml += item.qualitative_changes.map(qc => `<span class="change-pill pos">📈 ${qc}</span>`).join('');
         } else if (item.varDeltas) {
-          changesHtml += Object.entries(item.varDeltas).map(([k, v]) => `<span class="change-pill ${v.startsWith('+') ? 'pos' : 'neg'}">${k} ${v}</span>`).join('');
+          changesHtml += Object.entries(item.varDeltas).map(([k, deltaStr]) => {
+            const num = parseFloat(deltaStr);
+            const map = deltaQualitativeMap[k];
+            if (map) {
+              const text = num > 0 ? map.pos : map.neg;
+              return `<span class="change-pill ${num > 0 ? 'pos' : 'neg'}">${num > 0 ? '📈' : '📉'} ${text}</span>`;
+            }
+            return '';
+          }).filter(Boolean).join('');
         }
+
         if (item.tagsAdded && item.tagsAdded.length > 0) {
           changesHtml += item.tagsAdded.map(tag => {
             const mapped = FLAG_NARRATIVE_MAP[tag];
             return `<span class="change-pill tag">🏷️ ${mapped ? mapped.title : tag}</span>`;
           }).join('');
         }
+
         if (s.resources.overdraft_EP > 0) {
-          changesHtml += `<span class="change-pill neg">⚡ 透支精力 ${s.resources.overdraft_EP} 点 (预计下月初始可用 ${Math.max(0, s.resources.EP_max - s.resources.overdraft_EP)}/${s.resources.EP_max} EP)</span>`;
+          changesHtml += `<span class="change-pill neg">⚡ 本月形成了精力透支，下个月开局状态会受到一定影响</span>`;
         }
+
         if (!changesHtml) {
           changesHtml = '<span class="change-pill pos">🌿 平稳过渡</span>';
         }
         elResultChangesList.innerHTML = changesHtml;
 
-        // 下月预告
+        // 计算本月是否还可以继续安排事件 (月内循环多事件判断)
+        const remainingEvents = engine.getAvailableEvents();
+        const canContinueThisMonth =
+          s.resources.EP_current > 0
+          && remainingEvents.some(event =>
+            event.choices.some(choice =>
+              s.resources.TU_current >= ((choice.cost && choice.cost.TU) || 0)
+            )
+          );
+
         const nextMonthTotal = s.total_month + 1;
         const nextTl = window.MONTH_TIMELINE.find(t => t.total === nextMonthTotal);
         const nextName = nextTl ? nextTl.name.split(' (')[0] : '毕业收口';
-        elBtnNextMonthText.textContent = `进入下个月 (${nextName})`;
 
-        // 绑定推进下月按钮
-        elBtnResultNextMonth.onclick = () => {
-          const nextRes = engine.nextMonth();
-          currentPhase = 'choice';
-          selectedEventId = null;
-          if (nextRes.game_over) {
-            showResumeModal(nextRes.resume);
+        const elResultFooter = document.getElementById('result-footer-actions') || document.querySelector('.result-footer');
+        if (elResultFooter) {
+          if (canContinueThisMonth) {
+            elResultFooter.innerHTML = `
+              <div class="result-actions-row">
+                <button class="btn-primary-advance" id="btn-result-continue-month">
+                  <span>👉 继续安排本月</span>
+                </button>
+                <button class="btn-secondary-advance" id="btn-result-next-month">
+                  <span>结束本月，进入下个月 (${nextName}) &rarr;</span>
+                </button>
+              </div>
+            `;
+            const btnContinue = document.getElementById('btn-result-continue-month');
+            if (btnContinue) {
+              btnContinue.onclick = () => {
+                currentPhase = 'choice';
+                selectedEventId = null;
+                renderAll();
+              };
+            }
           } else {
-            renderAll();
+            elResultFooter.innerHTML = `
+              <div class="result-actions-row">
+                <button class="btn-primary-advance" id="btn-result-next-month">
+                  <span>结束本月，进入下个月 (${nextName}) &rarr;</span>
+                </button>
+              </div>
+            `;
           }
-        };
+
+          const btnNext = document.getElementById('btn-result-next-month');
+          if (btnNext) {
+            btnNext.onclick = () => {
+              const nextRes = engine.nextMonth();
+              currentPhase = 'choice';
+              selectedEventId = null;
+              if (nextRes.game_over) {
+                showResumeModal(nextRes.resume);
+              } else {
+                renderAll();
+              }
+            };
+          }
+        }
       }
     }
 
@@ -770,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
       labelsHtml += `
         <g transform="translate(${lx.toFixed(1)}, ${ly.toFixed(1)})">
           <text x="0" y="-3" text-anchor="${textAnchor}" class="radar-label-title">${dim.icon} ${dim.name}</text>
-          <text x="0" y="11" text-anchor="${textAnchor}" class="radar-label-sub">${qual.level} (${val})</text>
+          <text x="0" y="11" text-anchor="${textAnchor}" class="radar-label-sub">${qual.level}</text>
         </g>
       `;
     });
@@ -780,13 +847,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let dataPointsHtml = '';
     dimensions.forEach((dim, i) => {
       const val = cap && cap[dim.key] !== undefined ? cap[dim.key] : 0;
+      const qual = window.getCapQualitative(dim.key, val);
       const ratio = Math.max(0.08, Math.min(1.0, val / 100));
       const r = maxR * ratio;
       const angle = -Math.PI / 2 + (i * 2 * Math.PI) / N;
       const x = cx + r * Math.cos(angle);
       const y = cy + r * Math.sin(angle);
       dataPoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
-      dataPointsHtml += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" class="radar-point"><title>${dim.name}: ${val}分</title></circle>`;
+      dataPointsHtml += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" class="radar-point"><title>${dim.name}: ${qual.level} · ${qual.desc}</title></circle>`;
     });
 
     return `

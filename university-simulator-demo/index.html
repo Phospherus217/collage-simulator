@@ -25,13 +25,13 @@
       </div>
       <div class="top-bar-right">
         <div class="resource-group">
-          <div class="res-item res-tu" id="res-tu-chip" title="本月剩余自由时间 (Time Units)">
+          <div class="res-item res-tu" id="res-tu-chip" title="自由时间：本月自主安排时间">
             <span class="res-icon">⏳</span>
-            <span class="res-val" id="top-tu-val">8 TU</span>
+            <span class="res-val" id="top-tu-val">【安排宽裕】</span>
           </div>
-          <div class="res-item res-ep" id="res-ep-chip" title="当前精力 (Energy Points)">
+          <div class="res-item res-ep" id="res-ep-chip" title="精力状态：当前身心精力充沛">
             <span class="res-icon">⚡</span>
-            <span class="res-val" id="top-ep-val">90 EP</span>
+            <span class="res-val" id="top-ep-val">【状态充沛】</span>
           </div>
         </div>
         <button class="btn-icon-menu" id="btn-open-menu" title="游戏设置与更多操作" aria-label="更多菜单">
@@ -78,12 +78,12 @@
             </div>
           </div>
 
-          <!-- 阶段 B: 月度结果结算卡 (Month Result Phase) -->
+          <!-- 阶段 B: 本次行动反馈卡 (Action Result Phase) -->
           <div class="month-result-view" id="month-result-view" style="display: none;">
             <div class="result-card">
               <div class="result-header">
-                <div class="result-badge">🌟 本月历程结算</div>
-                <h2 class="result-title" id="result-title">九月行动圆满结束</h2>
+                <div class="result-badge">🌟 本次行动反馈</div>
+                <h2 class="result-title" id="result-title">本次选择带来了新的变化</h2>
                 <div class="result-subtitle" id="result-subtitle">大学生活的脚步正在稳步向前</div>
               </div>
 
@@ -95,20 +95,25 @@
                 </div>
               </div>
 
-              <!-- 本月定性变化与收获 -->
+              <!-- 本次行动定性变化与收获 -->
               <div class="result-changes-box">
-                <div class="changes-label">📈 本月成长与影响：</div>
+                <div class="changes-label">📈 成长与影响：</div>
                 <div class="changes-tags-list" id="result-changes-list">
                   <!-- 动态填入翻译为人类语言的成长与损耗 -->
                 </div>
               </div>
 
-              <!-- 推进下月主按钮 -->
-              <div class="result-footer">
-                <button class="btn-primary-advance" id="btn-result-next-month">
-                  <span id="btn-next-month-text">进入下个月 (10月)</span>
-                  <span class="btn-arrow">&rarr;</span>
-                </button>
+              <!-- 推进操作按钮区 (动态渲染: 继续安排本月 / 结束本月) -->
+              <div class="result-footer" id="result-footer-actions">
+                <div class="result-actions-row">
+                  <button class="btn-primary-advance" id="btn-result-continue-month">
+                    <span>👉 继续安排本月</span>
+                  </button>
+                  <button class="btn-secondary-advance" id="btn-result-next-month">
+                    <span id="btn-next-month-text">结束本月，进入下个月</span>
+                    <span class="btn-arrow">&rarr;</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
