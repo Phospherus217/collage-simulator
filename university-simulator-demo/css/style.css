@@ -1,12 +1,19 @@
 /* ==========================================================================
-   大学四年模拟器 - 沉浸式人生模拟系统响应式样式表 (style.css)
-   设计原则：
-   - 极简、现代、克制、轻游戏化 (聚焦当前人生、当前事件、单屏决策)
-   - 居中自适应容器，彻底消除左右偏移与横向溢出
-   - 完备支持 Desktop (>1024px)、Tablet (768~1023px)、Mobile (<768px)
-   - 原生 App 级触控体验：支持 iOS Safe Area、触摸反馈、防误选与 Bottom Sheet
+   大学四年模拟器 - 沉浸式人生模拟系统全端响应式样式表 (style.css)
+   
+   【分区架构】：
+   1. Design Tokens & CSS Variables
+   2. Base Reset & Global Typography (Touch, Safe Area & Font Fallbacks)
+   3. Desktop Layout & Components (Base Layout >= 1200px)
+   4. Tablet Layout (768px ~ 1199px - Landscape & Portrait)
+   5. Mobile Layout (< 768px - Portrait Single Column & Touch Ergonomics)
+   6. Small Mobile Optimization (<= 380px - iPhone SE / 320x568 / 360x640)
+   7. Mobile Landscape Optimization (max-height <= 500px)
+   8. Modals, Bottom Sheets & Overlay System
+   9. Heptagon SVG Radar Chart
    ========================================================================== */
 
+/* ================= 1. Design Tokens & CSS Variables ================= */
 :root {
   /* 基础中性色彩 */
   --bg-app: #f8fafc;
@@ -61,15 +68,17 @@
   --radius-lg: 16px;
   --radius-full: 9999px;
 
-  /* 布局宽度 tokens */
+  /* 布局尺寸 tokens */
   --container-max-width: 1160px;
+  --top-bar-height: 56px;
+  --bottom-nav-height: 60px;
 
   /* 字体系统 (全平台兼顾: iOS / Android / Windows / macOS) */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* 全局重置与容器基础 */
+/* ================= 2. Base Reset & Global Typography ================= */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -108,14 +117,18 @@ button, input, select {
 button {
   user-select: none;
   -webkit-user-select: none;
+  cursor: pointer;
 }
 
 img, svg {
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
-/* ================= 顶部极简状态栏 (Top Bar) ================= */
+/* ================= 3. Desktop Layout & Components (Base >= 1200px) ================= */
+
+/* 顶部状态栏 */
 .top-bar {
   width: 100%;
   background: var(--bg-card);
@@ -132,7 +145,7 @@ img, svg {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 0 20px;
-  height: 56px;
+  height: var(--top-bar-height);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -216,6 +229,7 @@ img, svg {
   font-size: 0.8rem;
   font-weight: 700;
   white-space: nowrap;
+  user-select: none;
 }
 
 .res-tu {
@@ -233,14 +247,14 @@ img, svg {
 .btn-icon-menu {
   background: transparent;
   border: 1px solid var(--border-subtle);
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: bold;
   color: var(--text-muted);
   transition: all 0.15s;
@@ -257,13 +271,13 @@ img, svg {
   border-color: var(--border-focus);
 }
 
-/* ================= 主内容容器 ================= */
+/* 主内容容器 */
 .app-main {
   flex: 1;
   width: 100%;
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 20px 20px calc(76px + env(safe-area-inset-bottom, 0px)) 20px;
+  padding: 20px 20px calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 16px) 20px;
   min-width: 0;
 }
 
@@ -308,7 +322,7 @@ img, svg {
   margin-top: 2px;
 }
 
-/* ================= 页面 1: 人生 (Life Layout) ================= */
+/* ================= 页面 1: 人生 (Life View) ================= */
 .life-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
@@ -334,7 +348,7 @@ img, svg {
   width: 100%;
 }
 
-/* 多事件切换胶囊 (自适应横向滚动条) */
+/* 多事件切换胶囊条 */
 .event-switch-bar {
   display: flex;
   align-items: center;
@@ -400,7 +414,7 @@ img, svg {
   border-color: var(--primary);
 }
 
-/* 当前主事件卡 (Current Event Card) */
+/* 当前主事件卡 */
 .current-event-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
@@ -474,7 +488,7 @@ img, svg {
   font-size: 1rem;
 }
 
-/* 行动选择卡片 (Action Cards Grid) */
+/* 行动选项卡片列表 */
 .action-cards-grid {
   display: flex;
   flex-direction: column;
@@ -497,6 +511,7 @@ img, svg {
   position: relative;
   width: 100%;
   min-width: 0;
+  min-height: 44px;
 }
 
 .action-card:hover:not(.disabled) {
@@ -521,6 +536,7 @@ img, svg {
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .action-card-title {
@@ -597,17 +613,6 @@ img, svg {
   color: var(--text-muted);
 }
 
-.action-cost-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  white-space: nowrap;
-  background: var(--bg-card-subtle);
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-}
-
 .action-disabled-hint {
   color: var(--danger);
   font-size: 0.76rem;
@@ -620,7 +625,7 @@ img, svg {
   font-weight: 700;
 }
 
-/* ================= 阶段 B: 月度结果结算卡 (Month Result Phase) ================= */
+/* 行动结果反馈卡 (Action Result Feedback Phase) */
 .month-result-view {
   animation: fadeIn 0.25s ease-out;
   width: 100%;
@@ -745,6 +750,18 @@ img, svg {
   border: 1px solid #c7d2fe;
 }
 
+.result-actions-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.result-actions-row .btn-primary-advance {
+  flex: 1.2;
+  min-width: 180px;
+}
+
 .btn-primary-advance {
   width: 100%;
   background: var(--primary);
@@ -760,6 +777,7 @@ img, svg {
   justify-content: center;
   gap: 8px;
   box-shadow: var(--shadow-sm);
+  min-height: 44px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -770,18 +788,6 @@ img, svg {
 .btn-primary-advance:hover {
   background: var(--primary-hover);
   box-shadow: var(--shadow-md);
-}
-
-.result-actions-row {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.result-actions-row .btn-primary-advance {
-  flex: 1.2;
-  min-width: 180px;
 }
 
 .btn-secondary-advance {
@@ -799,6 +805,7 @@ img, svg {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 44px;
   transition: all 0.15s ease;
 }
 
@@ -812,7 +819,7 @@ img, svg {
   transform: scale(0.985);
 }
 
-/* ================= 右侧人物简要状态 (Quick Status Sidebar) ================= */
+/* 右侧人物简要状态 (Quick Status Sidebar) */
 .quick-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
@@ -914,6 +921,7 @@ img, svg {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  min-height: 44px;
   transition: all 0.15s;
   box-shadow: var(--shadow-xs);
   width: 100%;
@@ -1082,6 +1090,7 @@ img, svg {
   flex-wrap: wrap;
   gap: 10px;
   cursor: pointer;
+  min-height: 44px;
 }
 
 .route-title-group {
@@ -1131,6 +1140,9 @@ img, svg {
   color: var(--text-muted);
   cursor: pointer;
   white-space: nowrap;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .route-summary-text {
@@ -1191,7 +1203,7 @@ img, svg {
 .subtab-btn {
   background: transparent;
   border: 1px solid var(--border-subtle);
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: var(--radius-full);
   font-size: 0.82rem;
   font-weight: 700;
@@ -1200,6 +1212,7 @@ img, svg {
   white-space: nowrap;
   transition: all 0.15s;
   flex-shrink: 0;
+  min-height: 38px;
 }
 
 .subtab-btn:hover {
@@ -1340,7 +1353,7 @@ img, svg {
   overflow-wrap: anywhere;
 }
 
-.project-card-role {
+.project-role-tag {
   background: var(--bg-card-subtle);
   border: 1px solid var(--border-subtle);
   font-size: 0.72rem;
@@ -1351,8 +1364,9 @@ img, svg {
   white-space: nowrap;
 }
 
-.project-card-desc {
-  font-size: 0.84rem;
+.project-desc-bullets {
+  padding-left: 18px;
+  font-size: 0.82rem;
   color: var(--text-body);
   line-height: 1.6;
   overflow-wrap: anywhere;
@@ -1365,7 +1379,7 @@ img, svg {
   left: 0;
   right: 0;
   width: 100%;
-  height: 60px;
+  height: var(--bottom-nav-height);
   background: var(--bg-card);
   border-top: 1px solid var(--border-subtle);
   z-index: 100;
@@ -1398,6 +1412,7 @@ img, svg {
   cursor: pointer;
   color: var(--text-muted);
   transition: all 0.15s;
+  min-height: 44px;
 }
 
 .nav-icon {
@@ -1422,7 +1437,7 @@ img, svg {
   transform: scale(1.1);
 }
 
-/* ================= 弹窗系统样式 (Modal System) ================= */
+/* ================= 8. Modals, Bottom Sheets & Overlay System ================= */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1470,11 +1485,16 @@ img, svg {
 .btn-close {
   background: transparent;
   border: none;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   line-height: 1;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 6px 10px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-close:hover {
@@ -1499,6 +1519,7 @@ img, svg {
   border-radius: var(--radius-card);
   text-align: left;
   cursor: pointer;
+  min-height: 48px;
   transition: all 0.15s;
 }
 
@@ -1564,12 +1585,13 @@ img, svg {
 .btn-debug-preset {
   background: #fff;
   border: 1px solid var(--border-subtle);
-  padding: 8px 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.84rem;
   font-weight: 700;
   text-align: left;
   cursor: pointer;
+  min-height: 44px;
   transition: all 0.15s;
 }
 
@@ -1582,15 +1604,18 @@ img, svg {
 .debug-jump-row {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .debug-select {
   flex: 1;
+  min-width: 140px;
   padding: 8px 12px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   font-size: 0.84rem;
   background: #fff;
+  min-height: 44px;
 }
 
 .btn-debug-action {
@@ -1602,6 +1627,7 @@ img, svg {
   font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
+  min-height: 44px;
 }
 
 .debug-ending-btns {
@@ -1613,10 +1639,11 @@ img, svg {
 .btn-ending-test {
   background: #fff;
   border: 1px solid var(--border-subtle);
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
   font-size: 0.76rem;
   cursor: pointer;
+  min-height: 36px;
 }
 
 .btn-ending-test:hover {
@@ -1630,12 +1657,15 @@ img, svg {
   padding: 12px;
   border-radius: var(--radius-sm);
   font-size: 0.72rem;
-  max-height: 180px;
+  max-height: 220px;
   overflow-y: auto;
   font-family: var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
-/* ================= 毕业大结局与简历弹窗 (Resume Modal) ================= */
+/* 毕业大结局与简历弹窗 (Resume Modal) */
 .resume-modal-card {
   max-width: 860px;
 }
@@ -1664,6 +1694,7 @@ img, svg {
   font-weight: 700;
   color: var(--text-body);
   cursor: pointer;
+  min-height: 38px;
 }
 
 .resume-tab-btn.active {
@@ -1675,11 +1706,16 @@ img, svg {
 .btn-close-modal {
   background: transparent;
   border: none;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   line-height: 1;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 6px 10px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .resume-modal-body {
@@ -1901,7 +1937,7 @@ img, svg {
   overflow-wrap: anywhere;
 }
 
-/* ================= 七维多边形雷达图 (Heptagon SVG Radar) ================= */
+/* ================= 9. Heptagon SVG Radar Chart ================= */
 .radar-chart-container {
   display: flex;
   justify-content: center;
@@ -1964,10 +2000,12 @@ img, svg {
   fill: var(--primary);
 }
 
-/* ================= 响应式与全端适配 (Responsive Rules) ================= */
+/* ================= 4. Tablet Layout (768px ~ 1199px) ================= */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .app-main {
+    padding: 18px 16px calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 16px) 16px;
+  }
 
-/* 1. Tablet 中等屏幕 (768px ~ 1023px) */
-@media (max-width: 1023px) {
   .life-layout {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -1982,31 +2020,41 @@ img, svg {
   .btn-link-growth {
     grid-column: 1 / -1;
   }
+
+  .capabilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-/* 2. Mobile 移动端 (< 768px) */
+/* ================= 5. Mobile Layout (< 768px - Single Column) ================= */
 @media (max-width: 767px) {
   .top-bar-inner {
-    padding: 0 14px;
+    padding: 0 12px;
     height: 52px;
+    gap: 8px;
   }
 
   .brand-title {
-    font-size: 0.96rem;
+    font-size: 0.94rem;
   }
 
   .stage-badge {
-    font-size: 0.78rem;
-    padding: 3px 10px;
-  }
-
-  .res-item {
     font-size: 0.76rem;
     padding: 3px 8px;
   }
 
+  .res-item {
+    font-size: 0.74rem;
+    padding: 3px 7px;
+  }
+
   .app-main {
-    padding: 14px 12px calc(76px + env(safe-area-inset-bottom, 0px)) 12px;
+    padding: 14px 12px calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 16px) 12px;
+  }
+
+  .life-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .life-sidebar-col {
@@ -2014,7 +2062,7 @@ img, svg {
   }
 
   .current-event-card {
-    padding: 18px 16px;
+    padding: 16px 14px;
     border-radius: var(--radius-card);
   }
 
@@ -2039,12 +2087,23 @@ img, svg {
   }
 
   .result-card {
-    padding: 20px 16px;
+    padding: 18px 14px;
     border-radius: var(--radius-card);
   }
 
   .result-title {
     font-size: 1.15rem;
+  }
+
+  .result-actions-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .result-actions-row .btn-primary-advance,
+  .result-actions-row .btn-secondary-advance {
+    width: 100%;
+    min-width: 100%;
   }
 
   .outcome-details-grid {
@@ -2053,7 +2112,7 @@ img, svg {
   }
 
   .standard-resume {
-    padding: 16px 14px;
+    padding: 16px 12px;
   }
 
   .resume-paper-header {
@@ -2076,76 +2135,6 @@ img, svg {
 
   .radar-label-sub {
     font-size: 8.5px;
-  }
-}
-
-/* 3. Small Mobile 窄屏手机 (< 540px) */
-@media (max-width: 540px) {
-  .top-bar-inner {
-    padding: 0 10px;
-    gap: 6px;
-  }
-
-  .brand-title {
-    font-size: 0.9rem;
-  }
-
-  .brand-icon {
-    font-size: 1.1rem;
-  }
-
-  .stage-badge {
-    font-size: 0.74rem;
-    padding: 2px 7px;
-    gap: 4px;
-  }
-
-  .stage-dot {
-    width: 6px;
-    height: 6px;
-  }
-
-  .resource-group {
-    gap: 4px;
-  }
-
-  .res-item {
-    font-size: 0.72rem;
-    padding: 2px 6px;
-    gap: 2px;
-  }
-
-  .btn-icon-menu {
-    width: 28px;
-    height: 28px;
-    font-size: 0.95rem;
-  }
-
-  .action-footer-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .action-cost-tags {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .bottom-nav {
-    height: 56px;
-  }
-
-  .bottom-nav-inner {
-    padding: 0 6px;
-  }
-
-  .nav-icon {
-    font-size: 1.05rem;
-  }
-
-  .nav-text {
-    font-size: 0.72rem;
   }
 
   /* 移动端模态弹窗化为底部抽屉 Bottom Sheet */
@@ -2171,12 +2160,21 @@ img, svg {
     padding: 14px 16px;
   }
 
-  .parents-outcome-card {
+  .resume-modal-card {
+    max-height: 92dvh;
+  }
+
+  .resume-modal-body {
+    max-height: calc(92dvh - 56px);
     padding: 16px 14px;
   }
 
+  .parents-outcome-card {
+    padding: 16px 12px;
+  }
+
   .outcome-destination-banner {
-    padding: 12px 14px;
+    padding: 12px 10px;
   }
 
   .outcome-dest-name {
@@ -2189,5 +2187,107 @@ img, svg {
 
   .resume-candidate-name {
     font-size: 1.3rem;
+  }
+}
+
+/* ================= 6. Small Mobile Optimization (<= 380px) ================= */
+@media (max-width: 380px) {
+  .top-bar-inner {
+    padding: 0 8px;
+    gap: 4px;
+  }
+
+  .brand-title {
+    font-size: 0.88rem;
+  }
+
+  .brand-icon {
+    font-size: 1.05rem;
+  }
+
+  .stage-badge {
+    font-size: 0.72rem;
+    padding: 2px 6px;
+    gap: 3px;
+  }
+
+  .stage-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .resource-group {
+    gap: 3px;
+  }
+
+  .res-item {
+    font-size: 0.7rem;
+    padding: 2px 5px;
+    gap: 2px;
+  }
+
+  .btn-icon-menu {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
+  }
+
+  .action-card {
+    padding: 12px 10px;
+  }
+
+  .action-footer-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .bottom-nav {
+    height: 54px;
+  }
+
+  .bottom-nav-inner {
+    padding: 0 4px;
+  }
+
+  .nav-icon {
+    font-size: 1rem;
+  }
+
+  .nav-text {
+    font-size: 0.7rem;
+  }
+}
+
+/* ================= 7. Mobile Landscape Optimization (max-height <= 500px) ================= */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root {
+    --top-bar-height: 44px;
+    --bottom-nav-height: 48px;
+  }
+
+  .top-bar-inner {
+    height: 44px;
+  }
+
+  .app-main {
+    padding-top: 10px;
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px) + 12px);
+  }
+
+  .bottom-nav {
+    height: 48px;
+  }
+
+  .modal-card {
+    max-height: 94dvh;
+  }
+
+  .resume-modal-body {
+    max-height: calc(94dvh - 50px);
+  }
+
+  .radar-chart-svg {
+    max-width: 240px;
   }
 }
