@@ -15,7 +15,7 @@
       <div>
         <h1 class="brand-title">大学四年模拟器</h1>
       </div>
-      <span class="brand-badge">v2.0 旗舰版</span>
+      <span class="brand-badge">v2.1 深度定性版</span>
     </div>
     <div class="header-status">
       <div class="status-chip chip-time" id="header-year">
@@ -24,15 +24,15 @@
       </div>
       <div class="status-chip chip-tu" id="header-tu">
         <span class="chip-dot green"></span>
-        <span id="header-tu-text">时间: 10/10 TU</span>
+        <span id="header-tu-text">时间: 【安排宽裕】</span>
       </div>
       <div class="status-chip chip-ep" id="header-ep">
         <span class="chip-dot blue"></span>
-        <span id="header-ep-text">精力: 100/100 EP</span>
+        <span id="header-ep-text">精力: 【状态充沛】</span>
       </div>
-      <div class="status-chip chip-ailab" id="header-stage">
+      <div class="status-chip chip-ailab" id="header-stage" style="display: none;">
         <span class="chip-dot purple"></span>
-        <span id="header-stage-text">AI-Lab: 完全隐藏</span>
+        <span id="header-stage-text"></span>
       </div>
       <button class="btn-next-month" id="btn-next-month" title="结算本月并推进到下一个月份">
         <span>推进到下个月</span>
@@ -66,20 +66,20 @@
 
     <!-- 右侧状态监控面板 -->
     <aside class="debug-panel">
-      <!-- 四大进阶路线状态卡 -->
+      <!-- 进阶发展路线卡 -->
       <div class="debug-card">
         <div class="debug-card-title">
-          <span>🚩 四大进阶发展路线 (Routes)</span>
+          <span>🚩 进阶发展路线 (Career Paths)</span>
         </div>
         <div id="debug-routes-grid">
-          <!-- 动态渲染工作/考研/保研/AI-Lab 路线状态 -->
+          <!-- 动态渲染三大常规主路线与隐藏极客机遇 -->
         </div>
       </div>
 
       <!-- 五大基础生活状态 -->
       <div class="debug-card">
         <div class="debug-card-title">
-          <span>❤️ 五大基础生活状态 (0~100)</span>
+          <span>❤️ 五大基础生活状态 (情境化定性)</span>
         </div>
         <div class="variable-grid" id="debug-basic-states-grid">
           <!-- 动态展示 Academic, Social, Romance, Family, Health -->
@@ -89,7 +89,7 @@
       <!-- 七大能力沉淀资产 -->
       <div class="debug-card">
         <div class="debug-card-title">
-          <span>📊 七大能力沉淀资产 (Capabilities)</span>
+          <span>📊 七大能力沉淀资产 (能力维度)</span>
         </div>
         <div class="variable-grid" id="debug-cap-grid">
           <!-- 动态展示 Portfolio, Research, Skill, Delivery, Reputation, Focus, AI_Depth -->
@@ -113,7 +113,7 @@
         </div>
         <div class="preset-btn-group">
           <button class="btn-preset" id="btn-route-a">
-            <span>Route A: 极客 AI-Lab + 顶级大厂 SSP (E04)</span>
+            <span>Route A: 极客工程实战 + 顶级大厂 SSP (E04)</span>
             <span>&rarr;</span>
           </button>
           <button class="btn-preset" id="btn-route-b">
@@ -143,7 +143,7 @@
         <div class="section-title">
           <span>📜 行动历史与状态迁移日志 (History Log)</span>
         </div>
-        <div class="section-sub">记录每一步决策对生活状态、能力资产、资源与经历池的实际影响</div>
+        <div class="section-sub">记录每一步决策对生活状态、能力资产、资源与经历池的定性影响</div>
       </div>
       <div class="history-list" id="history-list">
         <!-- 动态渲染历史行动记录 -->
@@ -155,12 +155,14 @@
   <div class="resume-modal-overlay" id="resume-modal-overlay" style="display: none;">
     <div class="resume-modal-card">
       <div class="resume-modal-top">
-        <h2>🎓 大学四年个人成长总览与毕业简历</h2>
+        <div class="resume-nav-tabs">
+          <button class="resume-tab-btn active" id="tab-btn-certificate">🎓 毕业去向荣誉证书</button>
+          <button class="resume-tab-btn" id="tab-btn-resume">📄 大赛级标准毕业简历</button>
+        </div>
         <button class="btn-close-modal" id="btn-close-resume">&times;</button>
       </div>
       <div class="resume-modal-body" id="resume-modal-body">
         <!-- 动态渲染最终毕业简历与结局 -->
-      </div>
     </div>
   </div>
 
