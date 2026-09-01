@@ -2609,18 +2609,39 @@ def main():
     os.makedirs(data_dir, exist_ok=True)
     os.makedirs(js_dir, exist_ok=True)
 
+    # 导入十大事件组高质扩充事件 (共72个高质事件)
+    import sys
+    if data_dir not in sys.path:
+        sys.path.insert(0, data_dir)
+    from expanded_ac import AC_EXPANDED_EVENTS
+    from expanded_so import SO_EXPANDED_EVENTS
+    from expanded_ro import RO_EXPANDED_EVENTS
+    from expanded_fa import FA_EXPANDED_EVENTS
+    from expanded_he import HE_EXPANDED_EVENTS
+    from expanded_pu import PU_EXPANDED_EVENTS
+    from expanded_wk import WK_EXPANDED_EVENTS
+    from expanded_ge import GE_EXPANDED_EVENTS
+    from expanded_re import RE_EXPANDED_EVENTS
+    from expanded_ai import AI_EXPANDED_EVENTS
+
+    all_events = (events + AC_EXPANDED_EVENTS + SO_EXPANDED_EVENTS + RO_EXPANDED_EVENTS +
+                  FA_EXPANDED_EVENTS + HE_EXPANDED_EVENTS + PU_EXPANDED_EVENTS +
+                  WK_EXPANDED_EVENTS + GE_EXPANDED_EVENTS + RE_EXPANDED_EVENTS +
+                  AI_EXPANDED_EVENTS)
+
     json_path = os.path.join(data_dir, 'events.json')
     with open(json_path, 'w', encoding='utf-8') as f:
-        json.dump(events, f, ensure_ascii=False, indent=2)
-    print(f"[OK] Successfully written {len(events)} events to {json_path}")
+        json.dump(all_events, f, ensure_ascii=False, indent=2)
+    print(f"[OK] Successfully written {len(all_events)} events to {json_path}")
 
     embed_path = os.path.join(js_dir, 'events_embed.js')
     with open(embed_path, 'w', encoding='utf-8') as f:
-        f.write("/**\n * 大学四年模拟器 v2.1 - 内嵌全量事件数据库 (3~4选项扩充 / 定性化描述 / 46个月无缝覆盖)\n */\n")
+        f.write("/**\n * 大学四年模拟器 v2.1 - 内嵌全量事件数据库 (105高质事件全景覆盖)\n */\n")
         f.write("window.EMBEDDED_EVENTS = ")
-        json.dump(events, f, ensure_ascii=False, indent=2)
+        json.dump(all_events, f, ensure_ascii=False, indent=2)
         f.write(";\n")
     print(f"[OK] Successfully written embedded events to {embed_path}")
 
 if __name__ == '__main__':
     main()
+
